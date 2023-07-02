@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -18,8 +18,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
+        'phone_no',
+        'user_type',
+        'status',
+        'email_verified',
+        'phone_verified',
+        'otp_verified',
         'password',
     ];
 
@@ -39,6 +46,10 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'status'=> 'int',
+        'email_verified' => 'int',
+        'phone_verified'=> 'int',
+        'otp_verified'=> 'int',
         'email_verified_at' => 'datetime',
     ];
 }
