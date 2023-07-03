@@ -1,0 +1,370 @@
+{
+	"info": {
+		"_postman_id": "328a124c-d83e-4c5c-a8bf-5117f296b9f6",
+		"name": "ecommerce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "26159511"
+	},
+	"item": [
+		{
+			"name": "send-otp",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "ankur.gurutechnolabs1@gmail.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "phone_no",
+							"value": "+919727308287",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "register",
+							"description": "login or register",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{custmer_local_url}}/send-otp"
+			},
+			"response": []
+		},
+		{
+			"name": "verify-otp",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"if(jsonData.data.token){\r",
+							"    pm.collectionVariables.set(\"token\", jsonData.data.token);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "ankur.gurutechnolabs1@gmail.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "phone_no",
+							"value": "+919727308287",
+							"type": "text"
+						},
+						{
+							"key": "otp",
+							"value": "1079",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "register",
+							"description": "login or register",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{custmer_local_url}}/verify-otp"
+			},
+			"response": []
+		},
+		{
+			"name": "is-exist(Phone or Email)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "ankur.gurutechnolabs1@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "phone_no",
+							"value": "+919727308287",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": "{{custmer_local_url}}/is-exist"
+			},
+			"response": []
+		},
+		{
+			"name": "register-with-password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"if(jsonData.data.token){\r",
+							"    pm.collectionVariables.set(\"token\", jsonData.data.token);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "first_name",
+							"value": "ankur",
+							"type": "text"
+						},
+						{
+							"key": "last_name",
+							"value": "thakrar",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "ankur.gurutechnolabs@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "phone_no",
+							"value": "+919727308286",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Ankur@123",
+							"description": "min 8 charcter,must be alphanumeruc & contain special character (Abc@1234)",
+							"type": "text"
+						},
+						{
+							"key": "confirm_password",
+							"value": "Ankur@123",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{custmer_local_url}}/register-with-password"
+			},
+			"response": []
+		},
+		{
+			"name": "login-with-password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"if(jsonData.data.token){\r",
+							"    pm.collectionVariables.set(\"token\", jsonData.data.token);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "ankur.gurutechnolabs@gmail.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "phone_no",
+							"value": "+919727308286",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "email_or_phone",
+							"value": "+919727308286",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Ankur@123",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{custmer_local_url}}/login-with-password"
+			},
+			"response": []
+		},
+		{
+			"name": "forgot-password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"if(jsonData.data.token){\r",
+							"    pm.collectionVariables.set(\"token\", jsonData.data.token);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "ankur.gurutechnolabs@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{custmer_local_url}}/forgot-password"
+			},
+			"response": []
+		},
+		{
+			"name": "reset-password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"if(jsonData.data.token){\r",
+							"    pm.collectionVariables.set(\"token\", jsonData.data.token);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "Ey4C5fAl0C9Rd1bfwzmhOXKo9sUgSxolHBFYpcKCo31cUlqkxWL2TSDIp9iBrTDF",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Ankur@123",
+							"type": "text"
+						},
+						{
+							"key": "confirm_password",
+							"value": "Ankur@123",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{custmer_local_url}}/reset-password"
+			},
+			"response": []
+		},
+		{
+			"name": "log-out",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{custmer_local_url}}/log-out"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{token}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "custmer_local_url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

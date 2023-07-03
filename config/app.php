@@ -194,4 +194,6 @@ return [
         // ...
     ])->toArray(),
 
+    'admin_mail' => env('ADMIN_EMAIL','admin@gmail.com'),
+    'app_name'  => env('APP_NAME','ecommerce')
 ];

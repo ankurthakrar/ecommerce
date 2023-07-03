@@ -23,9 +23,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('send-otp', [AuthController::class, 'sendOtp'])->name('send-otp');
 Route::post('verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');
 Route::post('is-exist', [AuthController::class, 'isExist'])->name('is-exist');
-Route::post('register', [AuthController::class, 'register'])->name('register');
+Route::post('register-with-password', [AuthController::class, 'registerWithPassword'])->name('register-with-password');
 Route::post('login-with-password', [AuthController::class, 'loginWithPassword'])->name('login-with-password');
 Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
+Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
 
 Route::middleware('auth:api')->group(function () {
     Route::get('log-out', [CustomerController::class,'logout'])->name('log-out');

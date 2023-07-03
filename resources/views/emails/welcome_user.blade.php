@@ -351,10 +351,7 @@
                     <tr><td align="center"><a style="text-decoration:none;" href="{{url('')}}"><img style="max-width: 90px; width: 100%; margin: 0px 0px 30px 0px;" src="{{url('')}}/images/ecommerce.jpg"></a></td></tr>
                     <tr>
                       <td>
-                        <p><b style="font-size:16px;">Your verification code is: {{$otp}}</b></p>
-                     
-                        <p>If you are having any issues with your account, please don't hesitate to contact us by replying to this mail.</p>
-                         
+                        <p><b style="font-size:16px;">Hy {{$user['first_name']}} <br>Welcome to {{ config('app.app_name')}}</b></p>
                         <p><b>Thanks!</b></p>
                         <!-- <p><b>Thanks!</b><br>Meet Now Team</p> -->
                         

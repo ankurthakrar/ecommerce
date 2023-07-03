@@ -3,7 +3,10 @@
 namespace App\Helpers;
 
 use Mail;
-use App\Mail\EmailVerificationMail;  
+use App\Mail\EmailVerificationMail;
+use App\Mail\ResetPasswordEmail;
+use App\Mail\WelcomeEmailAdmin;
+use App\Mail\WelcomeEmailUser;
 
 class Helper
 {
@@ -31,6 +34,22 @@ class Helper
             Mail::to($data['email'])->send(new EmailVerificationMail($otp));
         }
 
+        // For welcome mail to user
+
+        elseif (isset($data['welcome_user'])) { 
+            Mail::to($data['email'])->send(new WelcomeEmailUser($data['user']));
+            
+            // This will send mail to admin
+            
+            Mail::to(config('app.admin_mail'))->send(new WelcomeEmailAdmin($data['user']));
+        }
+
+        // For reset password link to mail
+
+        elseif (isset($data['reset_link'])) {
+            $reset_link = $data['reset_link'];
+            Mail::to($data['email'])->send(new ResetPasswordEmail($reset_link));
+        }
         return true;
     }
 }
