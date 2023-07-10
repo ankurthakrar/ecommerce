@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\CustomerController;
 
 /*
@@ -16,10 +17,6 @@ use App\Http\Controllers\Api\CustomerController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('send-otp', [AuthController::class, 'sendOtp'])->name('send-otp');
 Route::post('verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');
 Route::post('is-exist', [AuthController::class, 'isExist'])->name('is-exist');
@@ -29,5 +26,12 @@ Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name(
 Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
 
 Route::middleware('auth:api')->group(function () {
+
+    // Admin route
+    Route::get('category-list', [AdminController::class, 'categoryList'])->name('category-list');
+    Route::post('category-store', [AdminController::class,'categoryStore'])->name('category-store');
+    Route::get('category-detail/{id}', [AdminController::class, 'categoryDetail'])->name('category-detail');
+    Route::post('category-update', [AdminController::class,'categoryUpdate'])->name('category-update');
+
     Route::get('log-out', [CustomerController::class,'logout'])->name('log-out');
 });

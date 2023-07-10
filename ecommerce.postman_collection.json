@@ -1,11 +1,127 @@
 {
 	"info": {
-		"_postman_id": "328a124c-d83e-4c5c-a8bf-5117f296b9f6",
+		"_postman_id": "07b97911-3e9c-4f43-b495-dd567b1b0c5d",
 		"name": "ecommerce",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "26159511"
+		"_exporter_id": "12604902"
 	},
 	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "category-store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Smartphones",
+									"type": "text"
+								},
+								{
+									"key": "parent_id",
+									"value": "10",
+									"description": "for parent it is 0",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{custmer_local_url}}/category-store"
+					},
+					"response": []
+				},
+				{
+					"name": "category-update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "category_id",
+									"value": "14",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Smartphones",
+									"type": "text"
+								},
+								{
+									"key": "parent_id",
+									"value": "10",
+									"description": "for parent it is 0",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{custmer_local_url}}/category-update"
+					},
+					"response": []
+				},
+				{
+					"name": "category-detail",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": "{{custmer_local_url}}/category-detail/14"
+					},
+					"response": []
+				},
+				{
+					"name": "category-list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": "{{custmer_local_url}}/category-list"
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "send-otp",
 			"event": [
@@ -21,20 +137,26 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
 						{
 							"key": "email",
-							"value": "ankur.gurutechnolabs1@gmail.com",
-							"type": "text",
-							"disabled": true
+							"value": "ankur.gurutechnolabs@gmail.com",
+							"type": "text"
 						},
 						{
 							"key": "phone_no",
-							"value": "+919727308287",
-							"type": "text"
+							"value": "+919727308280",
+							"type": "text",
+							"disabled": true
 						},
 						{
 							"key": "type",
@@ -66,29 +188,35 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
 						{
 							"key": "email",
-							"value": "ankur.gurutechnolabs1@gmail.com",
+							"value": "ankur.gurutechnolabs@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "phone_no",
+							"value": "+919727308280",
 							"type": "text",
 							"disabled": true
 						},
 						{
-							"key": "phone_no",
-							"value": "+919727308287",
-							"type": "text"
-						},
-						{
 							"key": "otp",
-							"value": "1079",
+							"value": "1043",
 							"type": "text"
 						},
 						{
 							"key": "type",
-							"value": "register",
+							"value": "login",
 							"description": "login or register",
 							"type": "text"
 						}
@@ -113,20 +241,26 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
 						{
 							"key": "email",
 							"value": "ankur.gurutechnolabs1@gmail.com",
-							"type": "text"
+							"type": "text",
+							"disabled": true
 						},
 						{
 							"key": "phone_no",
-							"value": "+919727308287",
-							"type": "text",
-							"disabled": true
+							"value": "+919727308280",
+							"type": "text"
 						}
 					]
 				},
@@ -152,7 +286,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept-Charset",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -168,12 +308,12 @@
 						},
 						{
 							"key": "email",
-							"value": "ankur.gurutechnolabs@gmail.com",
+							"value": "ankur.gurutechnolabs12@gmail.com",
 							"type": "text"
 						},
 						{
 							"key": "phone_no",
-							"value": "+919727308286",
+							"value": "+919727308288",
 							"type": "text"
 						},
 						{
@@ -211,7 +351,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -261,7 +407,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -294,13 +446,19 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
 						{
 							"key": "token",
-							"value": "Ey4C5fAl0C9Rd1bfwzmhOXKo9sUgSxolHBFYpcKCo31cUlqkxWL2TSDIp9iBrTDF",
+							"value": "ydOKc2DE9cOetI5NDSII3xrP2Io8lyDkcxmEnMCrrCUvvavorSHrmeH9LZhozTmD",
 							"type": "text"
 						},
 						{
@@ -323,7 +481,13 @@
 			"name": "log-out",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"url": "{{custmer_local_url}}/log-out"
 			},
 			"response": []
@@ -358,11 +522,15 @@
 	"variable": [
 		{
 			"key": "custmer_local_url",
-			"value": "",
+			"value": "http://192.168.140.104:8000/api",
 			"type": "string"
 		},
 		{
 			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
 			"value": "",
 			"type": "string"
 		}
