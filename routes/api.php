@@ -28,10 +28,28 @@ Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('r
 Route::middleware('auth:api')->group(function () {
 
     // Admin route
+
+    // Category 
+
     Route::get('category-list', [AdminController::class, 'categoryList'])->name('category-list');
     Route::post('category-store', [AdminController::class,'categoryStore'])->name('category-store');
     Route::get('category-detail/{id}', [AdminController::class, 'categoryDetail'])->name('category-detail');
     Route::post('category-update', [AdminController::class,'categoryUpdate'])->name('category-update');
+
+    // Tags 
+
+    Route::get('tag-list', [AdminController::class, 'tagList'])->name('tag-list');
+    Route::post('tag-store', [AdminController::class,'tagStore'])->name('tag-store');
+    Route::get('tag-detail/{id}', [AdminController::class, 'tagDetail'])->name('tag-detail');
+    Route::post('tag-update', [AdminController::class,'tagUpdate'])->name('tag-update');
+    
+    // Product
+
+    Route::get('product-list', [AdminController::class, 'productList'])->name('product-list');
+    Route::post('product-store', [AdminController::class,'productStore'])->name('product-store');
+    Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');
+    Route::post('product-update', [AdminController::class,'productUpdate'])->name('product-update');
+    Route::get('product-delete/{id}', [AdminController::class, 'productDelete'])->name('product-delete');
 
     Route::get('log-out', [CustomerController::class,'logout'])->name('log-out');
 });
