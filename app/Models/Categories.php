@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
 
 class Categories extends Model
 {
@@ -12,7 +13,40 @@ class Categories extends Model
     protected $fillable = [
         'name',
         'parent_id',
+        'is_active'
     ];
+
+    // APPEND
+    protected $appends = ['image_url','cat_type'];
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            $imageUrl = URL('/category_image/' . $this->image->file_name);
+        }else{
+            $imageUrl = URL('/static_image/category_static_image.png');
+        }
+        unset($this->image);
+        return $imageUrl;
+    }
+
+    public function getCatTypeAttribute()
+    {
+        if ($this->parent_id == 0) {
+           return "Parent";
+        }elseif ($this->parent_id != 0 && $this->parent->parent_id == 0) {
+            return "Child";
+         } else {
+            return "Subchild";
+         }
+        return null;
+    }
+
+    // IT WILL CATEGORY IMAGE
+    public function image()
+    {
+        return $this->hasOne(Image::class, 'type_id')->where('type', 'category_image');
+    }
 
     // IT WILL RETURN ONLY ONE CHILDREN
     public function children()

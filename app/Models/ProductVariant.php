@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class ProductVariant extends Model
 {
     use SoftDeletes,HasFactory;
 
     protected $fillable = [
-        'title',
-        'category_id',
+        'product_id',
         'final_price',
         'discount',
         'tax',
@@ -23,39 +22,33 @@ class Product extends Model
         'weight',
         'stock',
         'minimum_stock',
-        'tags',
-        'description',
-        'description1',
-        'description2',
         'is_active',
-        'is_varient',
     ];
 
-   // APPEND
+    // APPEND
     protected $appends = ['image_url'];
 
     public function getImageUrlAttribute()
     {
-        if ($this->images->isNotEmpty()) {
-            $imageUrls = $this->images->pluck('file_name')->map(function ($fileName) {
-                return URL('/product_image/' . $fileName);
+        if ($this->variantImages->isNotEmpty()) {
+            $imageUrls = $this->variantImages->pluck('file_name')->map(function ($fileName) {
+                return URL('/product_variant_image/' . $fileName);
             });
         } else {
             $imageUrls = [URL('/static_image/product_static_image.jpg')];
         }
-        unset($this->images);
+        unset($this->variantImages);
         return $imageUrls;
     }
 
-    // IMAGES RELATIONSHIP
-    public function images()
+    public function product()
     {
-        return $this->hasMany(Image::class, 'type_id')->where('type', 'product_image');
+        return $this->belongsTo(Product::class);
     }
 
-    //IT WILL RETURN VARIANT
-    public function variant()
+    // IT WILL RETURN VARIANT IMAGES
+    public function variantImages()
     {
-        return $this->hasMany(ProductVariant::class, 'product_id')->with('variantImages');
+        return $this->hasMany(Image::class, 'type_id')->where('type', 'product_variant_image');
     }
 }

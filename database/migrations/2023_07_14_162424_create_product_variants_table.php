@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable();
-            $table->string('category_id')->nullable();
+            $table->string('product_id')->nullable();
             $table->string('final_price')->nullable();
             $table->string('discount')->nullable();
             $table->string('tax')->nullable();
@@ -27,12 +26,7 @@ return new class extends Migration
             $table->string('weight')->nullable();
             $table->string('stock')->nullable();
             $table->string('minimum_stock')->nullable();
-            $table->longText('tags')->nullable();
-            $table->longText('description')->nullable();
-            $table->longText('description1')->nullable();
-            $table->longText('description2')->nullable();
             $table->integer('is_active')->default(1);
-            $table->integer('is_varient')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -45,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('product_variants');
     }
 };

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\GeneralController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,7 @@ Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('r
 
 Route::middleware('auth:api')->group(function () {
 
-    // Admin route
+    // Admin ROUTE
 
     // Category 
 
@@ -49,7 +50,16 @@ Route::middleware('auth:api')->group(function () {
     Route::post('product-store', [AdminController::class,'productStore'])->name('product-store');
     Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');
     Route::post('product-update', [AdminController::class,'productUpdate'])->name('product-update');
-    Route::get('product-delete/{id}', [AdminController::class, 'productDelete'])->name('product-delete');
+
+    // USER ROUTE
+
+    // GENERAL ROUTE
+
+    // GET ONLY CATEGORY AND SUBCATEGORY
+
+    Route::get('get-parent-category-list', [GeneralController::class, 'getParentCategoryList'])->name('get-parent-category-list');
+    Route::get('get-parent-subcategory-list/{id}', [GeneralController::class, 'getParentSubcategoryList'])->name('get-parent-subcategory-list');
+    Route::get('get-category-tag-list', [GeneralController::class, 'getCategoryTagList'])->name('get-category-tag-list');
 
     Route::get('log-out', [CustomerController::class,'logout'])->name('log-out');
 });
