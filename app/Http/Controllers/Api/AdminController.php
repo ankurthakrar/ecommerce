@@ -266,7 +266,7 @@ class AdminController extends BaseController
         return $this->error('Something went wrong','Something went wrong');
     }
 
-    // PRODUCT ADD
+    // PRODUCT ADD 
 
     public function productStore(Request $request)
     {
