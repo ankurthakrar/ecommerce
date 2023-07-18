@@ -33,12 +33,15 @@ class Categories extends Model
     public function getCatTypeAttribute()
     {
         if ($this->parent_id == 0) {
+            unset($this->parent);
            return "Parent";
         }elseif ($this->parent_id != 0 && $this->parent->parent_id == 0) {
+            unset($this->parent);
             return "Child";
-         } else {
+        } else {
+            unset($this->parent);
             return "Subchild";
-         }
+        }
         return null;
     }
 

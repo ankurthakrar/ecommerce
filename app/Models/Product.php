@@ -37,11 +37,19 @@ class Product extends Model
     public function getImageUrlAttribute()
     {
         if ($this->images->isNotEmpty()) {
-            $imageUrls = $this->images->pluck('file_name')->map(function ($fileName) {
-                return URL('/product_image/' . $fileName);
+            $imageUrls = $this->images->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'url' => URL('/product_image/' . $image->file_name),
+                ];
             });
         } else {
-            $imageUrls = [URL('/static_image/product_static_image.jpg')];
+            $imageUrls = [
+                [
+                    'id' => null,
+                    'url' => URL('/static_image/product_static_image.jpg'),
+                ],
+            ];
         }
         unset($this->images);
         return $imageUrls;

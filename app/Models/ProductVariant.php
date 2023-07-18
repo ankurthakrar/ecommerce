@@ -31,11 +31,19 @@ class ProductVariant extends Model
     public function getImageUrlAttribute()
     {
         if ($this->variantImages->isNotEmpty()) {
-            $imageUrls = $this->variantImages->pluck('file_name')->map(function ($fileName) {
-                return URL('/product_variant_image/' . $fileName);
+            $imageUrls = $this->variantImages->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'url' => URL('/product_variant_image/' . $image->file_name),
+                ];
             });
         } else {
-            $imageUrls = [URL('/static_image/product_static_image.jpg')];
+            $imageUrls = [
+                [
+                    'id' => null,
+                    'url' => URL('/static_image/product_static_image.jpg'),
+                ],
+            ];
         }
         unset($this->variantImages);
         return $imageUrls;

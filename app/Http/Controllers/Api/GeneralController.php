@@ -46,7 +46,7 @@ class GeneralController extends BaseController
     public function getCategoryTagList()
     {
         try{
-            $data['category_list'] = Categories::where('is_active',1)->where('parent_id',0)->with(['parent:id,name,parent_id', 'children:id,name,parent_id','image'])->get();
+            $data['category_list'] = Categories::where('is_active',1)->where('parent_id',0)->with(['parent:id,name,parent_id', 'childrens:id,name,parent_id','image'])->get();
             $data['tag_list'] = Tag::where('is_active',1)->get();
             return $this->success($data,'Category and tag list');
         }catch(Exception $e){

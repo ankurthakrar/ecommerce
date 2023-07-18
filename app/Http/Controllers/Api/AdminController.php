@@ -42,7 +42,7 @@ class AdminController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
-                'name'       => 'required|string|max:255',
+                'name'       => 'required|string|max:255|unique:categories',
                 'parent_id'  => 'required',
                 'is_active'  => 'required',
                 'image'      => 'sometimes|file|mimes:jpeg,png,jpg|max:100000',
@@ -98,7 +98,7 @@ class AdminController extends BaseController
         try{
             $validateData = Validator::make($request->all(), [
                 'category_id'       => 'required',
-                'name'              => 'required|string|max:255',
+                'name'              => 'required|string|max:255|unique:categories,name,'.$request->category_id,
                 'parent_id'         => 'required',
                 'is_active'         => 'required',
                 'is_image_change'   => 'required',
@@ -179,7 +179,7 @@ class AdminController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
-                'name'       => 'required|string|max:255',
+                'name'       => 'required|string|max:255|unique:tags',
                 'is_active'  => 'required',
             ]);
 
@@ -221,7 +221,7 @@ class AdminController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
-                'name'       => 'required|string|max:255',
+                'name'       => 'required|string|max:255|unique:tags,name,'.$request->tag_id,
                 'is_active'  => 'required',
                 'tag_id'     => 'required',
             ]);
