@@ -34,14 +34,14 @@ class ProductVariant extends Model
             $imageUrls = $this->variantImages->map(function ($image) {
                 return [
                     'id' => $image->id,
-                    'url' => URL('/product_variant_image/' . $image->file_name),
+                    'url' => URL('/public/product_variant_image/' . $image->file_name),
                 ];
             });
         } else {
             $imageUrls = [
                 [
                     'id' => null,
-                    'url' => URL('/static_image/product_static_image.jpg'),
+                    'url' => URL('/public/static_image/product_static_image.jpg'),
                 ],
             ];
         }

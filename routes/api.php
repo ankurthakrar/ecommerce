@@ -50,8 +50,13 @@ Route::middleware('auth:api')->group(function () {
     Route::post('product-store', [AdminController::class,'productStore'])->name('product-store');
     Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');
     Route::post('product-update', [AdminController::class,'productUpdate'])->name('product-update');
-
+    
     // USER ROUTE
+    
+    Route::get('cart-item-list', [CustomerController::class, 'cartItemList'])->name('cart-item-list');
+    Route::post('cart-item-store', [CustomerController::class, 'cartItemStore'])->name('cart-item-store');
+    Route::post('cart-item-delete', [CustomerController::class, 'cartItemDelete'])->name('cart-item-delete');
+
 
     // GENERAL ROUTE
 

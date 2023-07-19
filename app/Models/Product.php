@@ -40,14 +40,14 @@ class Product extends Model
             $imageUrls = $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
-                    'url' => URL('/product_image/' . $image->file_name),
+                    'url' => URL('/public/product_image/' . $image->file_name),
                 ];
             });
         } else {
             $imageUrls = [
                 [
                     'id' => null,
-                    'url' => URL('/static_image/product_static_image.jpg'),
+                    'url' => URL('/public/static_image/product_static_image.jpg'),
                 ],
             ];
         }

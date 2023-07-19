@@ -22,9 +22,9 @@ class Categories extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
-            $imageUrl = URL('/category_image/' . $this->image->file_name);
+            $imageUrl = URL('/public/category_image/' . $this->image->file_name);
         }else{
-            $imageUrl = URL('/static_image/category_static_image.png');
+            $imageUrl = URL('/public/static_image/category_static_image.png');
         }
         unset($this->image);
         return $imageUrl;
