@@ -53,11 +53,20 @@ Route::middleware('auth:api')->group(function () {
     
     // USER ROUTE
     
+    // Cart
+
     Route::get('cart-item-list', [CustomerController::class, 'cartItemList'])->name('cart-item-list');
     Route::post('cart-item-store', [CustomerController::class, 'cartItemStore'])->name('cart-item-store');
     Route::post('cart-item-delete', [CustomerController::class, 'cartItemDelete'])->name('cart-item-delete');
+    
+    // Address
 
-
+    Route::get('address-list', [CustomerController::class, 'addressList'])->name('address-list');
+    Route::post('address-store', [CustomerController::class, 'addressStore'])->name('address-store');
+    Route::get('address-detail/{id}', [CustomerController::class, 'addressDetail'])->name('address-detail');
+    Route::post('address-delete', [CustomerController::class, 'addressDelete'])->name('address-delete');
+    Route::post('address-update', [CustomerController::class,'addressUpdate'])->name('address-update');
+    
     // GENERAL ROUTE
 
     // GET ONLY CATEGORY AND SUBCATEGORY
@@ -66,5 +75,18 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-parent-subcategory-list/{id}', [GeneralController::class, 'getParentSubcategoryList'])->name('get-parent-subcategory-list');
     Route::get('get-category-tag-list', [GeneralController::class, 'getCategoryTagList'])->name('get-category-tag-list');
 
+    Route::get('get-state-list', [GeneralController::class, 'getStateList'])->name('get-state-list');
+    Route::get('get-city-list/{id}', [GeneralController::class, 'getCityList'])->name('get-city-list');
+
+    // GET AND FILTER PRODUCT
+
+    Route::post('get-product-list', [GeneralController::class, 'getProductList'])->name('get-product-list');
+
+    
     Route::get('log-out', [CustomerController::class,'logout'])->name('log-out');
 });
+
+
+# ADMIN OR CLIENT SIDE SAME ROUTE
+
+// Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');

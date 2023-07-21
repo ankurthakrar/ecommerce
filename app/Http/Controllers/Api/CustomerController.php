@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\BaseController;
 use App\Models\Cart;
+use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -13,9 +14,9 @@ use Validator;
 
 class CustomerController extends BaseController
 {
-      // CART ITEM DELETE
+    // CART ITEM DELETE
 
-      public function cartItemList(Request $request){
+    public function cartItemList(Request $request){
         try{
             $user_id            = Auth::user()->id;
 
@@ -149,6 +150,135 @@ class CustomerController extends BaseController
             }
 
             return $this->success([],'Item deleted from cart successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ADDRESS LIST
+
+    public function addressList(Request $request)
+    {
+        try{
+            $user_id              = Auth::id();
+            $data['address_list'] = UserAddress::where('user_id',$user_id)->get();
+            return $this->success($data,'Address list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ADDRESS STORE
+
+    public function addressStore(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'address_line_1'    => 'required',
+                'address_line_2'    => 'required',
+                'city_id'           => 'required',
+                'state_id'          => 'required',
+                'pincode'           => 'required|max:7',
+                'address_type'      => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $input = $request->all();
+            $input['user_id']      = Auth::user()->id;
+            $input['address_type'] = strtolower($input['address_type']);
+            UserAddress::create($input);
+            return $this->success([],'Address store successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ADDRESS DETAILS
+
+    public function addressDetail(Request $request,$id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid address','Please select valid address');
+            }
+            $data = UserAddress::where('id',$id)->first();
+            if(!empty($data)){
+                return $this->success($data,'Address details');
+            }
+            return $this->error('Address not found','Address not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ADDRESS UPDATE
+
+    public function addressUpdate(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'address_id'        => 'required',
+                'address_line_1'    => 'required',
+                'address_line_2'    => 'required',
+                'city_id'           => 'required',
+                'state_id'          => 'required',
+                'pincode'           => 'required|max:7',
+                'address_type'      => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            } 
+
+            $user_address_details = UserAddress::where('id',$request->address_id)->first();
+            if(!empty($user_address_details)){
+                $input = $request->all();
+                $input['address_type'] = strtolower($input['address_type']);
+                $user_address_details->update($input);
+                return $this->success([],'Address updated successfully');
+            }
+
+            return $this->error('Address not found','Address not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ADDRESS DELETE
+
+    public function addressDelete(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'address_id'  => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            if(UserAddress::where('id',Auth::user()->id)->count() < 2){
+                return $this->error('You can not delete main address', 'You can not delete main address', 404);
+            }
+
+            $userAddress = UserAddress::where('id',$request['address_id'])->first();
+        
+            if ($userAddress) {
+                $userAddress->delete();
+                return $this->success([], 'Address deleted successfully');
+            } else {
+                return $this->error([], 'No data found', 404);
+            }
+
+            return $this->success([],'Address deleted successfully');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }

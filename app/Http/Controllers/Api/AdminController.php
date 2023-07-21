@@ -272,7 +272,7 @@ class AdminController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
-                'title'       => 'required|string|max:255',
+                'title'       => 'required|string|max:255|unique:products',
                 'category_id' => 'required',
                 'final_price'   => 'required'
             ]);
@@ -368,7 +368,7 @@ class AdminController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
-                'title'       => 'required|string|max:255',
+                'title'       => 'required|string|max:255|unique:products'.$request->product_id,
                 'product_id' => 'required',
                 'category_id' => 'required',
                 'final_price'   => 'required'
