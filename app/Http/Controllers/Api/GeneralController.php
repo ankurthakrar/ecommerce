@@ -52,6 +52,8 @@ class GeneralController extends BaseController
         try{
             $data['category_list'] = Categories::where('is_active',1)->where('parent_id',0)->with(['parent:id,name,parent_id', 'childrens:id,name,parent_id','image'])->get();
             $data['tag_list'] = Tag::where('is_active',1)->get();
+            $data['brand_list'] = Product::where('brand','!=',null)->groupBy('brand')->pluck('brand');
+            $data['variant_list'] = Product::where('version','!=',null)->groupBy('version')->pluck('version');
             return $this->success($data,'Category and tag list');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
@@ -97,7 +99,7 @@ class GeneralController extends BaseController
 
             $sorting = $request->input('sort_by', 'new'); 
 
-            $query   = Product::select('id', 'title', 'is_active','final_price','original_price','tax','discount','tags');
+            $query   = Product::select('id', 'title', 'is_active','final_price','original_price','tax','discount','tags','brand');
             if ($sorting == 'popularity') {
                 // Pending
             } elseif ($sorting == 'price_low_to_high') {
@@ -124,6 +126,20 @@ class GeneralController extends BaseController
                         $q->orWhereRaw("FIND_IN_SET('$tagId', tags) > 0");
                     }
                 });
+            }
+
+            if (isset($request->brand)) {
+                $brandIdArray = $request->brand;
+                $query->whereIn('brand',$brandIdArray);
+            }
+          
+            if (isset($request->version)) {
+                $versionIdArray = $request->version;
+                $query->whereIn('version',$versionIdArray);
+            }
+
+            if (isset($request->min_budget) && isset($request->max_budget)) {
+                $query->whereBetween('final_price', [$request->min_budget, $request->max_budget]);
             }
 
             $product_list = $query->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));

@@ -274,7 +274,8 @@ class AdminController extends BaseController
             $validateData = Validator::make($request->all(), [
                 'title'       => 'required|string|max:255|unique:products',
                 'category_id' => 'required',
-                'final_price'   => 'required'
+                'final_price'   => 'required',
+                'brand'   => 'required'
             ]);
 
             if ($validateData->fails()) {
@@ -282,6 +283,7 @@ class AdminController extends BaseController
             }
 
             $input = $request->all();
+            $input['brand'] = ucfirst($input['brand']);
 
             $finalPrice = $input['final_price'];
             $taxPercentage = isset($input['tax']) ? $input['tax'] : 0;
@@ -368,10 +370,11 @@ class AdminController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
-                'title'       => 'required|string|max:255|unique:products'.$request->product_id,
+                'title'       => 'required|string|max:255|unique:products,title,'.$request->product_id,
                 'product_id' => 'required',
                 'category_id' => 'required',
-                'final_price'   => 'required'
+                'final_price'   => 'required',
+                'brand'   => 'required'
             ]);
 
             if ($validateData->fails()) {
@@ -381,7 +384,8 @@ class AdminController extends BaseController
             $product_details = Product::where('id',$request->product_id)->first();
             if(!empty($product_details)){
                 $input = $request->all();
-
+                $input['brand'] = ucfirst($input['brand']);
+                
                 $finalPrice = $input['final_price'];
                 $taxPercentage = isset($input['tax']) ? $input['tax'] : 0;
                 $discountPercentage = isset($input['discount']) ? $input['discount'] : 0;

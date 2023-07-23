@@ -13,8 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('order_items', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('user_id');
+            $table->string('order_id');
+            $table->bigInteger('product_id');
+            $table->bigInteger('product_variation_id')->nullable();
+            $table->integer('is_booking_price')->default(0);
+            $table->string('qty')->nullable();
             $table->string('title')->nullable();
             $table->string('category_id')->nullable();
             $table->string('final_price')->nullable();
@@ -35,10 +41,7 @@ return new class extends Migration
             $table->longText('description')->nullable();
             $table->longText('description1')->nullable();
             $table->longText('description2')->nullable();
-            $table->integer('is_active')->default(1);
-            $table->integer('is_varient')->default(0);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -49,6 +52,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('order_items');
     }
 };

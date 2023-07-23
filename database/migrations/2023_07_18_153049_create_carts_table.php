@@ -19,6 +19,7 @@ return new class extends Migration
             $table->bigInteger('product_id');
             $table->bigInteger('product_variation_id')->nullable();
             $table->bigInteger('qty');
+            $table->integer('is_booking_price')->default(0);
             $table->timestamps();
         });
     }

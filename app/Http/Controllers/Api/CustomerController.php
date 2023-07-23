@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\BaseController;
 use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +18,7 @@ use Validator;
 
 class CustomerController extends BaseController
 {
-    // CART ITEM DELETE
+    // CART ITEM LIST
 
     public function cartItemList(Request $request){
         try{
@@ -27,9 +31,9 @@ class CustomerController extends BaseController
                                         ->whereNotNull('carts.product_variation_id')
                                         ->whereColumn('carts.product_id', 'product_variants.product_id');
                                 })
-                                ->select('carts.id', 'carts.user_id', 'carts.product_id', 'carts.product_variation_id', 'carts.qty', 'products.title')
-                                ->selectRaw('IFNULL(product_variants.original_price, products.original_price) as original_price')
-                                ->selectRaw('IF(product_variants.original_price IS NULL, 0, 1) as is_variant')
+                                ->select('carts.id', 'carts.user_id', 'carts.product_id', 'carts.product_variation_id', 'carts.qty','carts.is_booking_price', 'products.title')
+                                ->selectRaw('IFNULL(product_variants.final_price, products.final_price) as final_price')
+                                ->selectRaw('IF(product_variants.final_price IS NULL, 0, 1) as is_variant')
                                 ->selectRaw("
                                         CASE
                                             WHEN (product_variants.id IS NOT NULL AND carts.product_id = product_variants.product_id) THEN (
@@ -40,6 +44,15 @@ class CustomerController extends BaseController
                                             )
                                         END as image_url
                                     ")
+                                ->selectRaw("
+                                    CASE
+                                        WHEN (carts.is_booking_price = 1 AND carts.product_variation_id IS NULL) THEN
+                                            IF(products.pay_booking_price_tax > 0, (products.pay_booking_price * (1 + (products.pay_booking_price_tax / 100))), products.pay_booking_price)
+                                        WHEN (carts.is_booking_price = 1 AND carts.product_variation_id IS NOT NULL) THEN
+                                            IF(product_variants.pay_booking_price_tax > 0, (product_variants.pay_booking_price * (1 + (product_variants.pay_booking_price_tax / 100))), product_variants.pay_booking_price)
+                                        ELSE 0
+                                    END as booking_price
+                                ")
                                 ->where(function ($query) {
                                     $query->where(function ($q) {
                                         $q->whereNull('product_variants.id')
@@ -58,7 +71,8 @@ class CustomerController extends BaseController
             });
 
             $data['total'] = $data['cartItems']->sum(function ($item) { 
-                                return $item->qty * $item->original_price;
+                                $finalPrice = $item->booking_price > 0 ? $item->booking_price : $item->final_price;
+                                return $item->qty * $finalPrice;
                             });
             
             return $this->success($data,'Cart item list');
@@ -279,6 +293,182 @@ class CustomerController extends BaseController
             }
 
             return $this->success([],'Address deleted successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // CHECKOUT PAGE
+
+    public function checkout(){
+        try{
+            $user_id              = Auth::id();
+
+            
+            $data['cartItems'] = Cart::where('user_id', $user_id)
+                                ->Join('products', 'carts.product_id', '=', 'products.id')
+                                ->leftJoin('product_variants', function ($join) {
+                                    $join->on('carts.product_variation_id', '=', 'product_variants.id')
+                                        ->whereNotNull('carts.product_variation_id')
+                                        ->whereColumn('carts.product_id', 'product_variants.product_id');
+                                })
+                                ->select('carts.id', 'carts.user_id', 'carts.product_id', 'carts.product_variation_id', 'carts.qty','carts.is_booking_price', 'products.title')
+                                ->selectRaw('IFNULL(product_variants.final_price, products.final_price) as final_price')
+                                ->selectRaw('IF(product_variants.final_price IS NULL, 0, 1) as is_variant')
+                                ->selectRaw("
+                                        CASE
+                                            WHEN (product_variants.id IS NOT NULL AND carts.product_id = product_variants.product_id) THEN (
+                                                SELECT file_name FROM images WHERE type = 'product_variant_image' AND type_id = carts.product_variation_id LIMIT 1
+                                            )
+                                            ELSE (
+                                                SELECT file_name FROM images WHERE type = 'product_image' AND type_id = carts.product_id LIMIT 1
+                                            )
+                                        END as image_url
+                                    ")
+                                ->selectRaw("
+                                    CASE
+                                        WHEN (carts.is_booking_price = 1 AND carts.product_variation_id IS NULL) THEN
+                                            IF(products.pay_booking_price_tax > 0, (products.pay_booking_price * (1 + (products.pay_booking_price_tax / 100))), products.pay_booking_price)
+                                        WHEN (carts.is_booking_price = 1 AND carts.product_variation_id IS NOT NULL) THEN
+                                            IF(product_variants.pay_booking_price_tax > 0, (product_variants.pay_booking_price * (1 + (product_variants.pay_booking_price_tax / 100))), product_variants.pay_booking_price)
+                                        ELSE 0
+                                    END as booking_price
+                                ")
+                                ->where(function ($query) {
+                                    $query->where(function ($q) {
+                                        $q->whereNull('product_variants.id')
+                                            ->whereNull('carts.product_variation_id');
+                                    })
+                                    ->orWhere(function ($q) {
+                                        $q->whereNotNull('product_variants.id')
+                                            ->whereColumn('carts.product_id', 'product_variants.product_id');
+                                    });
+                                })
+                                ->get(); 
+
+            $data['cartItems']->transform(function ($item) {
+                $item->cart_image_url = $item->getCartImageUrlAttribute();
+                return $item;
+            });
+
+            $data['total'] = $data['cartItems']->sum(function ($item) { 
+                                $finalPrice = $item->booking_price > 0 ? $item->booking_price : $item->final_price;
+                                return $item->qty * $finalPrice;
+                            });
+
+            $data['address_list'] = UserAddress::where('user_id',$user_id)->get();
+            return $this->success($data,'Address list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // PLACE ORDER
+
+    public function placeOrder(Request $request){
+        try{
+            $input                = $request->all();
+            $validateData = Validator::make($input, [
+                'order'              => 'required|array',
+                'order.*.product_id' => 'required',
+                'order.*.qty'        => 'required',
+                'order_status'      => 'required',
+                'payment_method'    => 'required',
+                'payment_status'    => 'required',
+                'address_id'        => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $user_id              = Auth::id();
+            $input['user_id']     = $user_id;
+
+            $user_address = UserAddress::where('id',$input['address_id'])->first();
+            if(empty($user_address)){
+                return $this->error([],'Address not found');
+            }
+          
+            $order = new Order([
+                'user_id'       => $user_id,
+                'order_id'      => 'order_' . $user_id .'_'. str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT),
+                'address_id'    => $input['address_id'],
+                'total_amount'  => 100,
+                'order_status'  => $input['order_status'],
+                'payment_method'=> $input['payment_method'],
+                'payment_status'=> $input['payment_status'],
+                'address_line_1'=> $user_address->address_line_1,
+                'address_line_2'=> $user_address->address_line_2,
+                'city_id'       => $user_address->city_id,
+                'state_id'      => $user_address->state_id,
+                'pincode'       => $user_address->pincode,
+                'address_type'  => $user_address->address_type,
+                'total_amount'  => $input['total_amount'],
+            ]);
+            $order->save();
+            $order_data = $order->toArray(); 
+           
+            if(!empty($order_data)){
+                $orderItems = [];
+                foreach ($input['order'] as $item) {
+                    $productId = $item['product_id'];
+                    $productVariantId = $item['product_variation_id'] ?? null;
+                
+                    $product = Product::select('title', 'category_id', 'final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'unit', 'weight', 'stock', 'minimum_stock', 'brand', 'version', 'tags', 'description', 'description1', 'description2', 'is_active', 'is_varient')
+                        ->where('id', $productId)
+                        ->first();
+                
+                    if ($productVariantId) {
+
+                        $productVariant = ProductVariant::select('final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'unit', 'weight', 'stock', 'minimum_stock')
+                            ->where('id', $productVariantId)
+                            ->first();
+                
+                        if ($productVariant) {
+                            $product = $product->toArray();
+                            $product = array_merge($product, $productVariant->toArray());
+                        }
+                    }
+                
+                    $orderItemsData[] = [
+                        'user_id'               =>  $user_id,
+                        'order_id'              =>  $order_data['order_id'],
+                        'is_booking_price'      =>  $item['is_booking_price'] ?? 0,
+                        'product_id'            =>  $productId,
+                        'product_variation_id'  =>  $productVariantId,
+                        'qty'                   =>  $item['qty'],
+                        'title'                 =>  $product['title'],
+                        'category_id'           =>  $product['category_id'],
+                        'final_price'           =>  $product['final_price'],
+                        'discount'              =>  $product['discount'],
+                        'tax'                   =>  $product['tax'],
+                        'discount_amount'       =>  $product['discount_amount'],
+                        'tax_amount'            =>  $product['tax_amount'],
+                        'original_price'        =>  $product['original_price'],
+                        'pay_booking_price'     =>  $product['pay_booking_price'],
+                        'pay_booking_price_tax' =>  $product['pay_booking_price_tax'],
+                        'unit'                  =>  $product['unit'],
+                        'weight'                =>  $product['weight'],
+                        'stock'                 =>  $product['stock'],
+                        'minimum_stock'         =>  $product['minimum_stock'],
+                        'brand'                 =>  $product['brand'],
+                        'version'               =>  $product['version'],
+                        'tags'                  =>  $product['tags'],
+                        'description'           =>  $product['description'],
+                        'description1'          =>  $product['description1'],
+                        'description2'          =>  $product['description2'],
+                        'created_at'            =>  now(),
+                        'updated_at'            =>  now(),
+                    ];
+                }
+                OrderItem::insert($orderItemsData);
+
+                return $this->success([],'Order successfully');
+            }
+            return $this->error('Something went wrong','Something went wrong');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }

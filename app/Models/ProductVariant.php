@@ -18,6 +18,8 @@ class ProductVariant extends Model
         'discount_amount',
         'tax_amount',
         'original_price',
+        'pay_booking_price',
+        'pay_booking_price_tax',
         'unit',
         'weight',
         'stock',

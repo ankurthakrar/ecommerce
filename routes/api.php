@@ -66,7 +66,16 @@ Route::middleware('auth:api')->group(function () {
     Route::get('address-detail/{id}', [CustomerController::class, 'addressDetail'])->name('address-detail');
     Route::post('address-delete', [CustomerController::class, 'addressDelete'])->name('address-delete');
     Route::post('address-update', [CustomerController::class,'addressUpdate'])->name('address-update');
+
+    // Checkout
     
+    Route::get('get-checkout', [CustomerController::class, 'checkout'])->name('get-checkout');
+    
+    // Order
+    
+    Route::post('place-order', [CustomerController::class, 'placeOrder'])->name('place-order');
+
+
     // GENERAL ROUTE
 
     // GET ONLY CATEGORY AND SUBCATEGORY

@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('discount_amount')->nullable();
             $table->string('tax_amount')->nullable();
             $table->string('original_price')->nullable();
+            $table->string('pay_booking_price')->nullable();
+            $table->string('pay_booking_price_tax')->nullable();
             $table->string('unit')->nullable();
             $table->string('weight')->nullable();
             $table->string('stock')->nullable();
