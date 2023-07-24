@@ -7,6 +7,8 @@ use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use App\Models\Categories;
 use App\Models\Image;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Tag;
@@ -252,7 +254,7 @@ class AdminController extends BaseController
     public function productList(Request $request)
     {
         try{
-            $product_list = Product::select('id','title','is_active')->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+            $product_list = Product::select('id','title','is_active')->latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
 
             $data['product_list']  =  $product_list->values();
             $data['current_page']  =  $product_list->currentPage();
@@ -488,6 +490,73 @@ class AdminController extends BaseController
                 return $this->success($data,'Product updated successfully');
             }
             return $this->error('Product not found','Product not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    //  ORDER LIST
+
+    public function orderList(Request $request)
+    {
+        try{
+            $order_list   = Order::latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+            
+            $data['order_list']    =  $order_list->values();
+            $data['current_page']  =  $order_list->currentPage();
+            $data['per_page']      =  $order_list->perPage();
+            $data['total']         =  $order_list->total();
+            $data['last_page']     =  $order_list->lastPage();
+
+            return $this->success($data,'Address list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ORDER DETAILS
+
+    public function orderDetails(Request $request,$id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid order','Please select valid order');
+            }
+            $data['order_details'] = Order::with('orderItems')->where('id',$id)->first();
+            if(!empty($data['order_details'])){
+                return $this->success($data,'Order details');
+            }
+            return $this->error('Order not found','Order not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ORDER UPDATE
+
+    public function orderUpdate(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'order_id'     => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            } 
+
+            $order_details = Order::where('id',$request->order_id)->first();
+            if(!empty($order_details)){
+                $input = $request->all();
+                $order_details->order_status    = $input['order_status'] ?? $order_details['order_status'];
+                $order_details->payment_status  = $input['payment_status'] ?? $order_details['payment_status'];
+                $order_details->save();
+                return $this->success([],'Order updated successfully');
+            }
+            return $this->error('Order not found','Order not found');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }

@@ -51,6 +51,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');
     Route::post('product-update', [AdminController::class,'productUpdate'])->name('product-update');
     
+    // Order
+    
+    Route::get('order-list', [AdminController::class, 'orderList'])->name('order-list');
+    Route::get('order-details/{id}', [AdminController::class, 'orderDetails'])->name('order-details');
+    Route::post('order-update', [AdminController::class,'orderUpdate'])->name('order-update');
+
     // USER ROUTE
     
     // Cart
@@ -74,6 +80,8 @@ Route::middleware('auth:api')->group(function () {
     // Order
     
     Route::post('place-order', [CustomerController::class, 'placeOrder'])->name('place-order');
+    Route::get('get-order-list', [CustomerController::class, 'getOrderList'])->name('get-order-list');
+    Route::get('get-order-details/{id}', [CustomerController::class, 'getOrderDetails'])->name('get-order-details');
     
     Route::get('log-out', [CustomerController::class,'logout'])->name('log-out');
 });
@@ -94,6 +102,4 @@ Route::get('get-city-list/{id}', [GeneralController::class, 'getCityList'])->nam
 Route::post('get-product-list', [GeneralController::class, 'getProductList'])->name('get-product-list');
 Route::get('get-product-detail/{id}', [GeneralController::class, 'getProductDetail'])->name('get-product-detail');
 
-# ADMIN OR CLIENT SIDE SAME ROUTE
-
-// Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');
+ 

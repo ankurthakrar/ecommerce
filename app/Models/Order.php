@@ -24,4 +24,9 @@ class Order extends Model
         'pincode',
         'address_type',
     ];
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id');
+    }
 }

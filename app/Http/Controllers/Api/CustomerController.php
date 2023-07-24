@@ -435,7 +435,7 @@ class CustomerController extends BaseController
                 
                     $orderItemsData[] = [
                         'user_id'               =>  $user_id,
-                        'order_id'              =>  $order_data['order_id'],
+                        'order_id'              =>  $order_data['id'],
                         'is_booking_price'      =>  $item['is_booking_price'] ?? 0,
                         'product_id'            =>  $productId,
                         'product_variation_id'  =>  $productVariantId,
@@ -469,6 +469,47 @@ class CustomerController extends BaseController
                 return $this->success([],'Order successfully');
             }
             return $this->error('Something went wrong','Something went wrong');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    //  ORDER LIST
+
+    public function getOrderList(Request $request)
+    {
+        try{
+            $user_id               = Auth::id();
+            $order_list            = Order::where('user_id',$user_id)->latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+
+            $data['order_list']    =  $order_list->values();
+            $data['current_page']  =  $order_list->currentPage();
+            $data['per_page']      =  $order_list->perPage();
+            $data['total']         =  $order_list->total();
+            $data['last_page']     =  $order_list->lastPage();
+
+            return $this->success($data,'Address list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ORDER DETAILS
+
+    public function getOrderDetails(Request $request,$id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid order','Please select valid order');
+            }
+            $user_id               = Auth::id();
+            $data['order_details'] = Order::with('orderItems')->where('id',$id)->where('user_id',$user_id)->first();
+            if(!empty($data['order_details'])){
+                return $this->success($data,'Order details');
+            }
+            return $this->error('Order not found','Order not found');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }
