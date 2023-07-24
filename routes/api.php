@@ -74,27 +74,25 @@ Route::middleware('auth:api')->group(function () {
     // Order
     
     Route::post('place-order', [CustomerController::class, 'placeOrder'])->name('place-order');
-
-
-    // GENERAL ROUTE
-
-    // GET ONLY CATEGORY AND SUBCATEGORY
-
-    Route::get('get-parent-category-list', [GeneralController::class, 'getParentCategoryList'])->name('get-parent-category-list');
-    Route::get('get-parent-subcategory-list/{id}', [GeneralController::class, 'getParentSubcategoryList'])->name('get-parent-subcategory-list');
-    Route::get('get-category-tag-list', [GeneralController::class, 'getCategoryTagList'])->name('get-category-tag-list');
-
-    Route::get('get-state-list', [GeneralController::class, 'getStateList'])->name('get-state-list');
-    Route::get('get-city-list/{id}', [GeneralController::class, 'getCityList'])->name('get-city-list');
-
-    // GET AND FILTER PRODUCT
-
-    Route::post('get-product-list', [GeneralController::class, 'getProductList'])->name('get-product-list');
-
     
     Route::get('log-out', [CustomerController::class,'logout'])->name('log-out');
 });
 
+// GENERAL ROUTE
+
+// GET ONLY CATEGORY AND SUBCATEGORY
+
+Route::get('get-parent-category-list', [GeneralController::class, 'getParentCategoryList'])->name('get-parent-category-list');
+Route::get('get-parent-subcategory-list/{id}', [GeneralController::class, 'getParentSubcategoryList'])->name('get-parent-subcategory-list');
+Route::get('get-category-tag-list', [GeneralController::class, 'getCategoryTagList'])->name('get-category-tag-list');
+
+Route::get('get-state-list', [GeneralController::class, 'getStateList'])->name('get-state-list');
+Route::get('get-city-list/{id}', [GeneralController::class, 'getCityList'])->name('get-city-list');
+
+// GET AND FILTER PRODUCT
+
+Route::post('get-product-list', [GeneralController::class, 'getProductList'])->name('get-product-list');
+Route::get('get-product-detail/{id}', [GeneralController::class, 'getProductDetail'])->name('get-product-detail');
 
 # ADMIN OR CLIENT SIDE SAME ROUTE
 

@@ -155,4 +155,26 @@ class GeneralController extends BaseController
         }
         return $this->error('Something went wrong','Something went wrong');
     }
+
+    // PRODUCT DETAILS
+
+    public function getProductDetail(Request $request,$id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid product','Please select valid product');
+            }
+            $data['prodct_details'] = Product::with(['variant'])->where('id',$id)->first();
+            if(!empty($data['prodct_details'])){
+                $data['prodct_details']['category_id_array'] = explode(',',$data['prodct_details']['category_id']);
+                $data['prodct_details']['tags_array'] = explode(',',$data['prodct_details']['tags']);
+                return $this->success($data,'Product details');
+            }
+            return $this->error('Product not found','Product not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+ 
 }
