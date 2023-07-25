@@ -396,7 +396,6 @@ class CustomerController extends BaseController
                 'user_id'       => $user_id,
                 'order_id'      => 'order_' . $user_id .'_'. str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT),
                 'address_id'    => $input['address_id'],
-                'total_amount'  => 100,
                 'order_status'  => $input['order_status'],
                 'payment_method'=> $input['payment_method'],
                 'payment_status'=> $input['payment_status'],
@@ -417,13 +416,13 @@ class CustomerController extends BaseController
                     $productId = $item['product_id'];
                     $productVariantId = $item['product_variation_id'] ?? null;
                 
-                    $product = Product::select('title', 'category_id', 'final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'unit', 'weight', 'stock', 'minimum_stock', 'brand', 'version', 'tags', 'description', 'description1', 'description2', 'is_active', 'is_varient')
+                    $product = Product::select('title', 'category_id', 'final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'brand', 'version', 'tags', 'description', 'description1', 'description2', 'is_active', 'is_varient')
                         ->where('id', $productId)
                         ->first();
                 
                     if ($productVariantId) {
 
-                        $productVariant = ProductVariant::select('final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'unit', 'weight', 'stock', 'minimum_stock')
+                        $productVariant = ProductVariant::select('final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'colour', 'color_name', 'side_type', 'available_in')
                             ->where('id', $productVariantId)
                             ->first();
                 
@@ -432,7 +431,7 @@ class CustomerController extends BaseController
                             $product = array_merge($product, $productVariant->toArray());
                         }
                     }
-                
+
                     $orderItemsData[] = [
                         'user_id'               =>  $user_id,
                         'order_id'              =>  $order_data['id'],
@@ -450,10 +449,14 @@ class CustomerController extends BaseController
                         'original_price'        =>  $product['original_price'],
                         'pay_booking_price'     =>  $product['pay_booking_price'],
                         'pay_booking_price_tax' =>  $product['pay_booking_price_tax'],
-                        'unit'                  =>  $product['unit'],
+                        'sku'                   =>  $product['sku'],
                         'weight'                =>  $product['weight'],
                         'stock'                 =>  $product['stock'],
                         'minimum_stock'         =>  $product['minimum_stock'],
+                        'colour'                =>  $productVariant['colour'] ?? null,
+                        'color_name'            =>  $productVariant['color_name'] ?? null,
+                        'side_type'             =>  $productVariant['side_type'] ?? null,
+                        'available_in'          =>  $productVariant['available_in'] ?? null,
                         'brand'                 =>  $product['brand'],
                         'version'               =>  $product['version'],
                         'tags'                  =>  $product['tags'],

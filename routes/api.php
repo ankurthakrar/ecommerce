@@ -50,6 +50,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('product-store', [AdminController::class,'productStore'])->name('product-store');
     Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');
     Route::post('product-update', [AdminController::class,'productUpdate'])->name('product-update');
+    Route::post('variant-update', [AdminController::class,'variantUpdate'])->name('variant-update');
+    Route::post('product-image-update', [AdminController::class,'productImageUpdate'])->name('product-image-update');
     
     // Order
     

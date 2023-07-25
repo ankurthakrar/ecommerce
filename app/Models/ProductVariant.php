@@ -20,11 +20,15 @@ class ProductVariant extends Model
         'original_price',
         'pay_booking_price',
         'pay_booking_price_tax',
-        'unit',
+        'sku',
         'weight',
         'stock',
         'minimum_stock',
-        'is_active',
+        'colour',
+        'color_name',
+        'side_type',
+        'available_in',
+        'is_active'
     ];
 
     // APPEND

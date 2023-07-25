@@ -277,7 +277,9 @@ class AdminController extends BaseController
                 'title'       => 'required|string|max:255|unique:products',
                 'category_id' => 'required',
                 'final_price'   => 'required',
-                'brand'   => 'required'
+                'brand'   => 'required',
+                'sku'   => 'required|unique:products',
+                'variant.*.sku' => 'required_with:variant|unique:product_variants',
             ]);
 
             if ($validateData->fails()) {
@@ -376,7 +378,8 @@ class AdminController extends BaseController
                 'product_id' => 'required',
                 'category_id' => 'required',
                 'final_price'   => 'required',
-                'brand'   => 'required'
+                'brand'   => 'required',
+                'sku'   => 'required|unique:products,sku,'.$request->product_id,
             ]);
 
             if ($validateData->fails()) {
@@ -490,6 +493,52 @@ class AdminController extends BaseController
                 return $this->success($data,'Product updated successfully');
             }
             return $this->error('Product not found','Product not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    //  VARIANT UPDATE
+
+    public function variantUpdate(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+              
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            } 
+
+            if(!empty($variant_details)){
+                return $this->success([],'Variant updated successfully');
+            }
+            return $this->error('Variant not found','Variant not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    //  PRODUCT IMAGE UPDATE
+
+    public function productImageUpdate(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+              
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            } 
+
+            if(!empty($image_details)){
+                return $this->success([],'Image updated successfully');
+            }
+            return $this->error('Image not found','Image not found');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }

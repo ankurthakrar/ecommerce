@@ -21,7 +21,7 @@ class Product extends Model
         'original_price',
         'pay_booking_price',
         'pay_booking_price_tax',
-        'unit',
+        'sku',
         'weight',
         'stock',
         'minimum_stock',

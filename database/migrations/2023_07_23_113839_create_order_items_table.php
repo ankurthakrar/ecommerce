@@ -31,10 +31,14 @@ return new class extends Migration
             $table->string('original_price')->nullable();
             $table->string('pay_booking_price')->nullable();
             $table->string('pay_booking_price_tax')->nullable();
-            $table->string('unit')->nullable();
+            $table->string('sku')->nullable();
             $table->string('weight')->nullable();
             $table->string('stock')->nullable();
             $table->string('minimum_stock')->nullable();
+            $table->string('colour')->nullable();
+            $table->string('color_name')->nullable();
+            $table->string('side_type')->nullable();
+            $table->string('available_in')->nullable();
             $table->string('brand')->nullable();
             $table->string('version')->nullable();
             $table->longText('tags')->nullable();
