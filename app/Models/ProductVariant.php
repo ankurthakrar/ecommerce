@@ -26,7 +26,7 @@ class ProductVariant extends Model
         'minimum_stock',
         'colour',
         'color_name',
-        'side_type',
+        'size',
         'available_in',
         'is_active'
     ];

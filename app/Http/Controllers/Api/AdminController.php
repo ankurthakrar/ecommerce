@@ -375,11 +375,11 @@ class AdminController extends BaseController
         try{
             $validateData = Validator::make($request->all(), [
                 'title'       => 'required|string|max:255|unique:products,title,'.$request->product_id,
-                'product_id' => 'required',
+                'product_id'  => 'required',
                 'category_id' => 'required',
-                'final_price'   => 'required',
-                'brand'   => 'required',
-                'sku'   => 'required|unique:products,sku,'.$request->product_id,
+                'final_price' => 'required',
+                'brand'       => 'required',
+                'sku'         => 'required|unique:products,sku,'.$request->product_id,
             ]);
 
             if ($validateData->fails()) {
@@ -399,97 +399,6 @@ class AdminController extends BaseController
     
                 $input = array_merge($input,$data);
                 $product_data = $product_details->update($input);
-    
-                $folderPath = public_path().'/product_image';
-    
-                $image = $request->file('image');
-                
-                $image_data = [];
-                if(isset($input['change_image_id'])){
-                    $change_image_ids = explode(',', $input['change_image_id']);
-                    $old_images = Image::whereIn('id', $change_image_ids)->get();
-
-                    // Delete images and their corresponding files
-                    foreach ($old_images as $old_image) {
-                        $fileName = $old_image->file_name;
-                        $old_image->delete();
-                
-                        // Delete file from the product_image folder
-                        $filePath = public_path().'/product_image/'.$fileName;
-                        if (file_exists($filePath)) {
-                            unlink($filePath);
-                        }
-                    }
-                }
-
-                if (!empty($image)) {
-                    $image_data = $this->uploadMediaFiles($image,$request->product_id,'pro_','product_image',$folderPath);
-                    Image::insert($image_data);
-                }
-                
-                $product_variant = isset($input['variant']) ? $input['variant'] : null;
-                $variant_array = [];
-                $product_details->update(['is_varient' => 0]);
-                $existingVariantIds = [];
-
-                if(!empty($product_variant)){
-                    $product_details->update(['is_varient' => 1]);
-                    foreach($product_variant as $key=>$variant){
-                        $variantId = isset($variant['id']) ? $variant['id'] : null;
-
-                        $finalPrice = $variant['final_price'];
-                        $taxPercentage = isset($variant['tax']) ? $variant['tax'] : 0;
-                        $discountPercentage = isset($variant['discount']) ? $variant['discount'] : 0;
-            
-                        $data = $this->getOriginalAmount($finalPrice,$taxPercentage,$discountPercentage);
-            
-                        $variant = array_merge($variant,$data);
-    
-                        $variant['product_id'] = $request->product_id; 
-                        
-                        if ($variantId) {
-                            // Update existing variant
-                            $variantModel = ProductVariant::where('id', $variantId)->update(\Arr::except($variant, ['image', 'change_image_id']));
-                            $existingVariantIds[] = $variantId;
-                        } else {
-                            // Insert new variant
-                            $variantModel = ProductVariant::create($variant);
-                            $variantId = $variantModel->id;
-                            $existingVariantIds[] = $variantModel->id;
-                        } 
-    
-                        $image_data = [];
-                        if(isset($variant['change_image_id'])){
-                            $change_image_ids = explode(',', $variant['change_image_id']);
-                            $old_images = Image::whereIn('id', $change_image_ids)->get();
-        
-                            // Delete images and their corresponding files
-                            foreach ($old_images as $old_image) {
-                                $fileName = $old_image->file_name;
-                                $old_image->delete();
-                        
-                                // Delete file from the product_variant_image folder
-                                $filePath = public_path().'/product_variant_image/'.$fileName;
-                                if (file_exists($filePath)) {
-                                    unlink($filePath);
-                                }
-                            }
-                        }
-
-                        $image = isset($variant['image']) ? $variant['image'] : null;
-                        if (!empty($image)) {
-                            $folderPath = public_path().'/product_variant_image';
-                            $image_data = $this->uploadMediaFiles($image,$variantId,'pro_vari_','product_variant_image',$folderPath);
-                            Image::insert($image_data);
-                            unset($variant['image']);
-                        }
-                        
-                        $variant_array[] = $variant;
-                    } 
-                }
-                // Remove variants that are not in the updated variants
-                ProductVariant::where('product_id', $request->product_id)->whereNotIn('id', $existingVariantIds)->delete();
-                
                 return $this->success($data,'Product updated successfully');
             }
             return $this->error('Product not found','Product not found');
@@ -505,15 +414,31 @@ class AdminController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
-              
+                'product_id'  => 'required',
+                'variant_id'  => 'required', 
+                'final_price' => 'required', 
+                'sku'         => 'required|unique:product_variants,sku,'.$request->variant_id,
             ]);
 
             if ($validateData->fails()) {
                 return $this->error($validateData->errors(),'Validation error',422);
             } 
 
+            $variant_details = ProductVariant::where('id', $request->variant_id)->where('product_id',$request->product_id)->first();
             if(!empty($variant_details)){
-                return $this->success([],'Variant updated successfully');
+                $input = $request->all(); 
+                
+                $finalPrice = $input['final_price'];
+                $taxPercentage = isset($input['tax']) ? $input['tax'] : 0;
+                $discountPercentage = isset($input['discount']) ? $input['discount'] : 0;
+    
+                $data = $this->getOriginalAmount($finalPrice,$taxPercentage,$discountPercentage);
+    
+                $input = array_merge($input,$data);
+                $variant_data = $variant_details->update($input);
+
+                $data1['product_variant'] =  ProductVariant::where('product_id',$request->product_id)->get();
+                return $this->success($data1,'Variant updated successfully');
             }
             return $this->error('Variant not found','Variant not found');
         }catch(Exception $e){
@@ -528,15 +453,74 @@ class AdminController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
-              
+                'type'    => 'required',
+                'type_id' => 'required',
+                'image'   => 'required',
             ]);
 
             if ($validateData->fails()) {
                 return $this->error($validateData->errors(),'Validation error',422);
             } 
 
+            $folder_name = 'product_image';
+            $shortcut    = 'pro_vari_';
+            if($request->type == 'product_variant_image'){
+                $this->productImageDelete($request);
+                $folder_name = 'product_variant_image';
+                $shortcut    = 'pro_vari_';
+            }
+
+            $image = isset($request['image']) ? $request['image'] : null;
+            if (!empty($image)) {
+                $folderPath = public_path().'/'.$folder_name;
+                $image_data = $this->uploadMediaFiles(array($request['image']),$request['type_id'],$shortcut,$folder_name,$folderPath);
+                Image::insert($image_data);
+            }
+            return $this->success([],'Image uploaded successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    //  VARIANT DELETE
+
+    public function  variantDelete(Request $request){
+        try{
+            $variant_details = ProductVariant::where('id',$request->variant_id)->first();
+            if(!empty($variant_details)){
+                $variant_details->delete();
+                return $this->success([],'Variant deleted successfully.');
+            }
+            return $this->error('Variant not found','Variant not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+   
+    //  IMAGE DELETE
+
+    public function  productImageDelete(Request $request){
+        try{
+            $image_details = Image::where('id',$request->image_id)->where('type_id',$request->type_id)->where('type',$request->type)->first();
             if(!empty($image_details)){
-                return $this->success([],'Image updated successfully');
+                if($request->type == 'product_image'){
+                    // Delete file from the product_variant_image folder
+                    $filePath = public_path().'/product_image/'.$image_details->file_name;
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+                if($request->type == 'product_variant_image'){
+                    // Delete file from the product_variant_image folder
+                    $filePath = public_path().'/product_variant_image/'.$image_details->file_name;
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+                $image_details->delete();
+                return $this->success([],'Image deleted successfully.');
             }
             return $this->error('Image not found','Image not found');
         }catch(Exception $e){

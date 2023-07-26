@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('minimum_stock')->nullable();
             $table->string('colour')->nullable();
             $table->string('color_name')->nullable();
-            $table->string('side_type')->nullable();
+            $table->string('size')->nullable();
             $table->string('available_in')->nullable();
             $table->string('brand')->nullable();
             $table->string('version')->nullable();

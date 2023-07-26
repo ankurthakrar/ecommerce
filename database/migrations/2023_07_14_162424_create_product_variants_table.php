@@ -31,7 +31,7 @@ return new class extends Migration
             $table->integer('is_active')->default(1);
             $table->string('colour')->nullable();
             $table->string('color_name')->nullable();
-            $table->string('side_type')->nullable();
+            $table->string('size')->nullable();
             $table->string('available_in')->nullable();
             $table->timestamps();
             $table->softDeletes();

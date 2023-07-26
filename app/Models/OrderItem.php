@@ -32,7 +32,7 @@ class OrderItem extends Model
         'minimum_stock',
         'colour',
         'color_name',
-        'side_type',
+        'size',
         'available_in',
         'brand',
         'version',

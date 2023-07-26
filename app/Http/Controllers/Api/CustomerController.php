@@ -422,7 +422,7 @@ class CustomerController extends BaseController
                 
                     if ($productVariantId) {
 
-                        $productVariant = ProductVariant::select('final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'colour', 'color_name', 'side_type', 'available_in')
+                        $productVariant = ProductVariant::select('final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'colour', 'color_name', 'size', 'available_in')
                             ->where('id', $productVariantId)
                             ->first();
                 
@@ -455,7 +455,7 @@ class CustomerController extends BaseController
                         'minimum_stock'         =>  $product['minimum_stock'],
                         'colour'                =>  $productVariant['colour'] ?? null,
                         'color_name'            =>  $productVariant['color_name'] ?? null,
-                        'side_type'             =>  $productVariant['side_type'] ?? null,
+                        'size'             =>  $productVariant['size'] ?? null,
                         'available_in'          =>  $productVariant['available_in'] ?? null,
                         'brand'                 =>  $product['brand'],
                         'version'               =>  $product['version'],

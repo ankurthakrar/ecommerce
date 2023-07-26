@@ -52,6 +52,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('product-update', [AdminController::class,'productUpdate'])->name('product-update');
     Route::post('variant-update', [AdminController::class,'variantUpdate'])->name('variant-update');
     Route::post('product-image-update', [AdminController::class,'productImageUpdate'])->name('product-image-update');
+    Route::post('variant-delete', [AdminController::class,'variantDelete'])->name('variant-delete');
+    Route::post('product-image-delete', [AdminController::class,'productImageDelete'])->name('product-image-delete');
     
     // Order
     
