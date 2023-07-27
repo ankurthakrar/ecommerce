@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\BaseController;  
+use App\Http\Controllers\BaseController;
+use App\Models\Brand;
 use App\Models\Categories;
 use App\Models\City;
 use App\Models\Product;
@@ -52,7 +53,7 @@ class GeneralController extends BaseController
         try{
             $data['category_list'] = Categories::where('is_active',1)->where('parent_id',0)->with(['parent:id,name,parent_id', 'childrens:id,name,parent_id','image'])->get();
             $data['tag_list'] = Tag::where('is_active',1)->get();
-            $data['brand_list'] = Product::where('brand','!=',null)->groupBy('brand')->pluck('brand');
+            $data['brand_list'] = Brand::where('is_active',1)->get();
             $data['variant_list'] = Product::where('version','!=',null)->groupBy('version')->pluck('version');
             return $this->success($data,'Category and tag list');
         }catch(Exception $e){
@@ -85,6 +86,25 @@ class GeneralController extends BaseController
         return $this->error('Something went wrong','Something went wrong');
     }
     
+    // GET BRAND LIST
+
+     public function getBrandList(){
+        try{
+            $data['brand_all_list'] =   Brand::all()->map(function ($brand) {
+                                            return $brand->makeHidden('image');
+                                        });
+
+            $data['parent_active_all_list']  =   Brand::where('is_active',1)->get()->map(function ($brand) {
+                                                    return $brand->makeHidden('image');
+                                                });
+            
+            return $this->success($data,'Brand list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
     // GET PRODUCT LIST
 
     public function getProductList(Request $request){

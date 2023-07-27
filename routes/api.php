@@ -43,6 +43,13 @@ Route::middleware('auth:api')->group(function () {
     Route::post('tag-store', [AdminController::class,'tagStore'])->name('tag-store');
     Route::get('tag-detail/{id}', [AdminController::class, 'tagDetail'])->name('tag-detail');
     Route::post('tag-update', [AdminController::class,'tagUpdate'])->name('tag-update');
+
+    // Brand 
+
+    Route::get('brand-list', [AdminController::class, 'brandList'])->name('brand-list');
+    Route::post('brand-store', [AdminController::class,'brandStore'])->name('brand-store');
+    Route::get('brand-detail/{id}', [AdminController::class, 'brandDetail'])->name('brand-detail');
+    Route::post('brand-update', [AdminController::class,'brandUpdate'])->name('brand-update');
     
     // Product
 
@@ -100,6 +107,8 @@ Route::get('get-category-tag-list', [GeneralController::class, 'getCategoryTagLi
 
 Route::get('get-state-list', [GeneralController::class, 'getStateList'])->name('get-state-list');
 Route::get('get-city-list/{id}', [GeneralController::class, 'getCityList'])->name('get-city-list');
+
+Route::get('get-brand-list', [GeneralController::class, 'getBrandList'])->name('get-brand-list');
 
 // GET AND FILTER PRODUCT
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\BaseController;  
 use Illuminate\Http\Request;
+use App\Models\Brand;
 use App\Models\Categories;
 use App\Models\Image;
 use App\Models\Order;
@@ -204,7 +205,7 @@ class AdminController extends BaseController
     {
         try{
             if ($id < 1) {
-                return $this->error('Please select valid category','Please select valid category');
+                return $this->error('Please select valid tag','Please select valid tag');
             }
             $data['tag_details'] = Tag::where('id',$id)->first();
             if(!empty($data['tag_details'])){
@@ -249,6 +250,126 @@ class AdminController extends BaseController
         return $this->error('Something went wrong','Something went wrong');
     }
 
+    // BRAND LIST
+
+    public function brandList(Request $request)
+    {
+        try{
+            $brand_list = Brand::paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+
+            $data['brand_list']    =  $brand_list->values();
+            $data['current_page']  =  $brand_list->currentPage();
+            $data['per_page']      =  $brand_list->perPage();
+            $data['total']         =  $brand_list->total();
+            $data['last_page']     =  $brand_list->lastPage();
+            return $this->success($data,'Brand list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // BRAND ADD
+
+    public function brandStore(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'name'       => 'required|string|max:255|unique:brands',
+                'is_active'  => 'required',
+                'image'      => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $input = $request->all();
+            $brandData = Brand::create($input);
+            
+            $image = $request->file('image');
+            $folderPath = public_path().'/brand_image';
+            $image_data = $this->uploadMediaFiles(array($image),$brandData->id,'brand_','brand_image',$folderPath);
+            Image::insert($image_data);
+
+            return $this->success([],'Brand added successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+   
+    // BRAND DETAILS
+
+    public function brandDetail(Request $request,$id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid brand','Please select valid brand');
+            }
+            $data['brand_details'] = Brand::where('id',$id)->first();
+            if(!empty($data['brand_details'])){
+                return $this->success($data,'Brand details');
+            }
+            return $this->error('Brand not found','Brand not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // BRAND UPDATE
+
+    public function brandUpdate(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'is_active'  => 'required',
+                'brand_id'     => 'required',
+                'name'       => 'required|string|max:255|unique:brands,name,'.$request->brand_id,
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            } 
+
+            $brands_details = Brand::where('id',$request->brand_id)->first();
+            if(!empty($brands_details)){
+                $input = $request->all();
+                $brands_details->name      = $input['name'];
+                $brands_details->is_active = $input['is_active'];
+                $brands_details->save();
+
+                if(isset($request['image'])){
+
+                    $image_details = Image::where('type_id',$request->brand_id)->where('type','brand_image')->first();
+                    if(!empty($image_details)){
+                        
+                        $filePath = public_path().'/brand_image/'.$image_details->file_name;
+                        if (file_exists($filePath)) {
+                            unlink($filePath);
+                        }
+                       
+                        $image_details->delete();
+                    }
+
+                    $image = $request->file('image');
+                    $folderPath = public_path().'/brand_image';
+                    $image_data = $this->uploadMediaFiles(array($image),$request->brand_id,'brand_','brand_image',$folderPath);
+                    Image::insert($image_data);
+                }
+
+                $data['brands_details'] = Brand::where('id',$request->brand_id)->first();
+                return $this->success($data,'Brand updated successfully');
+            }
+
+            return $this->error('Brand not found','Brand not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
     // PRODUCT LIST
 
     public function productList(Request $request)
@@ -276,9 +397,9 @@ class AdminController extends BaseController
             $validateData = Validator::make($request->all(), [
                 'title'       => 'required|string|max:255|unique:products',
                 'category_id' => 'required',
-                'final_price'   => 'required',
-                'brand'   => 'required',
-                'sku'   => 'required|unique:products',
+                // 'final_price'   => 'required',
+                // 'brand'   => 'required',
+                'sku'   => 'sometimes|unique:products',
                 'variant.*.sku' => 'required_with:variant|unique:product_variants',
             ]);
 
@@ -287,8 +408,10 @@ class AdminController extends BaseController
             }
 
             $input = $request->all();
-            $input['brand'] = ucfirst($input['brand']);
-
+            // $input['brand'] = ucfirst($input['brand']);
+            if(!isset($input['final_price'])){
+                $input['final_price'] = 0;
+            }
             $finalPrice = $input['final_price'];
             $taxPercentage = isset($input['tax']) ? $input['tax'] : 0;
             $discountPercentage = isset($input['discount']) ? $input['discount'] : 0;
@@ -377,9 +500,9 @@ class AdminController extends BaseController
                 'title'       => 'required|string|max:255|unique:products,title,'.$request->product_id,
                 'product_id'  => 'required',
                 'category_id' => 'required',
-                'final_price' => 'required',
-                'brand'       => 'required',
-                'sku'         => 'required|unique:products,sku,'.$request->product_id,
+                // 'final_price' => 'required',
+                // 'brand'       => 'required',
+                'sku'         => 'sometimes|unique:products,sku,'.$request->product_id,
             ]);
 
             if ($validateData->fails()) {
@@ -389,8 +512,10 @@ class AdminController extends BaseController
             $product_details = Product::where('id',$request->product_id)->first();
             if(!empty($product_details)){
                 $input = $request->all();
-                $input['brand'] = ucfirst($input['brand']);
-                
+                // $input['brand'] = ucfirst($input['brand']);
+                if(!isset($input['final_price'])){
+                    $input['final_price'] = 0;
+                }
                 $finalPrice = $input['final_price'];
                 $taxPercentage = isset($input['tax']) ? $input['tax'] : 0;
                 $discountPercentage = isset($input['discount']) ? $input['discount'] : 0;

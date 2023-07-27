@@ -36,7 +36,7 @@ class Product extends Model
     ];
 
    // APPEND
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url','brand_name'];
 
     public function getImageUrlAttribute()
     {
@@ -57,6 +57,14 @@ class Product extends Model
         }
         unset($this->images);
         return $imageUrls;
+    }
+   
+    public function getBrandNameAttribute()
+    {
+        if ((int)$this->brand > 0) {
+            return Brand::where('id',$this->brand)->first()->value('name');
+        }
+        return "";
     }
 
     // IMAGES RELATIONSHIP
