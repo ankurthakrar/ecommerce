@@ -119,7 +119,23 @@ class GeneralController extends BaseController
 
             $sorting = $request->input('sort_by', 'new'); 
 
-            $query   = Product::select('id', 'title', 'is_active','final_price','original_price','tax','discount','tags','brand');
+            $query   = Product::select('id', 'title','is_active','final_price','original_price','tax','discount','tags','brand');
+
+            // $isVariant = $query->value('is_varient');
+            // if ($isVariant == 1) {
+            //     $query->leftJoin('product_variants', function ($join) {
+            //         $join->on('products.id', '=', 'product_variants.product_id')
+            //             ->where('product_variants.is_active', 1)
+            //             ->where('product_variants.id', function ($subquery) {
+            //                 $subquery->select(\DB::raw('MIN(id)'))
+            //                     ->from('product_variants')
+            //                     ->whereRaw('product_variants.product_id = products.id')
+            //                     ->where('product_variants.is_active', 1);
+            //             });
+            //     })
+            //     ->select$query('products.id', 'products.title', 'products.is_active', 'products.is_varient', 'product_variants.final_price', 'product_variants.original_price', 'product_variants.tax', 'product_variants.discount', 'products.tags', 'products.brand');
+            // }
+            
             if ($sorting == 'popularity') {
                 // Pending
             } elseif ($sorting == 'price_low_to_high') {
@@ -162,7 +178,7 @@ class GeneralController extends BaseController
                 $query->whereBetween('final_price', [$request->min_budget, $request->max_budget]);
             }
 
-            $product_list = $query->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+            $product_list = $query->where('is_active',1)->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
 
             $data['product_list']  =  $product_list->values();
             $data['current_page']  =  $product_list->currentPage();
