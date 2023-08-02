@@ -208,9 +208,9 @@ class AuthController extends BaseController
         return $this->error('Something went wrong','Something went wrong');
     }
 
-      // USER LOGIN
+    // USER LOGIN
 
-      public function loginWithPassword(Request $request){
+    public function loginWithPassword(Request $request){
         try{
 
             if(!isset($request->email) && !isset($request->phone_no)  && !isset($request->email_or_phone)){
@@ -352,6 +352,8 @@ class AuthController extends BaseController
         return $this->error('Something went wrong','Something went wrong');
     }
 
+    // RESET PASSWORD
+    
     public function resetPassword(Request $request)
     {
         try {
@@ -388,4 +390,49 @@ class AuthController extends BaseController
         }
     }
 
+    // SOCIAL AUTH
+
+    public function socialAuth(Request $request){
+        try{
+            $validateData = Validator::make($request->all(), [
+                'given_name'      => 'required|string|max:255',
+                'family_name'     => 'required|string|max:255',
+                'email'           => 'required|email|max:255',
+                'google_id'       => 'required', 
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }   
+
+            $is_user_exist = User::where('email',$request->email)->where('google_id',$request->google_id)->first();
+            if(!empty($is_user_exist)){
+                $data['token'] = $is_user_exist->createToken('Auth token')->accessToken;
+                return $this->success($data,'Login successfully');
+            }
+            
+            $input                   = $request->all();
+            $input['user_type']      = 'user';
+            $input['first_name']     = $request->given_name;
+            $input['last_name']      = $request->family_name;
+            $input['google_id']      = $request->google_id;
+            $input['email']          = $request->email;
+            $user_data               = User::create($input);
+            $user_data['token']      = $user_data->createToken('Auth token')->accessToken;
+
+            $key = $request->email;
+            $email_data   = [
+                'email'          => $key,
+                'welcome_user'   => 'welcome',
+                'subject'        => 'Welcome to '.config('app.admin_mail'),
+                'user'           => $input,
+            ];
+            Helper::sendMail('emails.welcome_user', $email_data, $key, '');
+
+            return $this->success($user_data,'You are successfully registered');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
 }

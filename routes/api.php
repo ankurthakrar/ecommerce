@@ -25,6 +25,7 @@ Route::post('register-with-password', [AuthController::class, 'registerWithPassw
 Route::post('login-with-password', [AuthController::class, 'loginWithPassword'])->name('login-with-password');
 Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
+Route::post('social-auth', [AuthController::class, 'socialAuth'])->name('social-auth');
 
 Route::middleware('auth:api')->group(function () {
 
