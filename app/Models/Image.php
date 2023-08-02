@@ -13,6 +13,18 @@ class Image extends Model
         'type_id',
         'file_name',
         'type',
+        'custom_data'
     ];
 
+    protected $appends = ['image_url'];
+    
+    protected $casts = [
+        'custom_data' => 'array',
+    ];
+    // ACCESSOR
+
+    public function getImageUrlAttribute()
+    {
+        return asset($this->type .'/'. $this->file_name);
+    }
 }

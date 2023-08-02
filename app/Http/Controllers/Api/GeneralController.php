@@ -7,6 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\Brand;
 use App\Models\Categories;
 use App\Models\City;
+use App\Models\Image;
 use App\Models\Product;
 use App\Models\State;
 use App\Models\Tag;
@@ -207,6 +208,19 @@ class GeneralController extends BaseController
                 return $this->success($data,'Product details');
             }
             return $this->error('Product not found','Product not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // SLIDER IMAGE LIST
+
+    public function getSliderImageList()
+    {
+        try{
+            $data['image_list'] = Image::where('type','slider_image')->get();
+            return $this->success($data,'Image list');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }

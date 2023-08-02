@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('type_id')->nullable();
             $table->string('file_name')->nullable();
             $table->string('type')->nullable();
+            $table->longText('custom_data')->nullable();
             $table->timestamps();
         });
     }

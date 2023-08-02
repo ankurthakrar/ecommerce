@@ -68,6 +68,14 @@ Route::middleware('auth:api')->group(function () {
     Route::get('order-details/{id}', [AdminController::class, 'orderDetails'])->name('order-details');
     Route::post('order-update', [AdminController::class,'orderUpdate'])->name('order-update');
 
+    // Slider
+
+    Route::get('slider-image-list', [AdminController::class, 'sliderImageList'])->name('slider-image-list');
+    Route::post('slider-image-store', [AdminController::class,'sliderImageStore'])->name('slider-image-store');
+    Route::get('slider-image-detail/{id}', [AdminController::class, 'sliderImageDetail'])->name('slider-image-detail');
+    Route::post('slider-image-update', [AdminController::class,'sliderImageUpdate'])->name('slider-image-update');
+    Route::get('slider-image-delete/{id}', [AdminController::class, 'sliderImageDelete'])->name('slider-image-delete');
+
     // USER ROUTE
     
     // Cart
@@ -109,6 +117,8 @@ Route::get('get-state-list', [GeneralController::class, 'getStateList'])->name('
 Route::get('get-city-list/{id}', [GeneralController::class, 'getCityList'])->name('get-city-list');
 
 Route::get('get-brand-list', [GeneralController::class, 'getBrandList'])->name('get-brand-list');
+
+Route::get('get-slider-image-list', [GeneralController::class, 'getSliderImageList'])->name('get-slider-image-list');
 
 // GET AND FILTER PRODUCT
 

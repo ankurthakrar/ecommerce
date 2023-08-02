@@ -720,4 +720,152 @@ class AdminController extends BaseController
         }
         return $this->error('Something went wrong','Something went wrong');
     }
+
+    // SLIDER IMAGE LIST
+
+    public function sliderImageList()
+    {
+        try{
+            $data['image_list'] = Image::where('type','slider_image')->get();
+            return $this->success($data,'Image list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+ 
+    // SLIDER IMAGE ADD
+
+    public function sliderImageStore(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'redirect_url' => 'required',
+                'image'   => 'required|file|mimes:jpeg,webp|max:100000', 
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $media      = $request->file('image');
+            $extension  = $media->getClientOriginalExtension();
+            $filename   = 'slider_image_' . random_int(10000, 99999) . '.' . $extension;
+            $media->move(public_path('slider_image'), $filename);
+
+            $dataToStore = [
+                'redirect_url' => $request['redirect_url']
+            ];
+    
+            $image               = new Image();
+            $image->type_id      = 0;
+            $image->file_name    = $filename;
+            $image->type         = "slider_image";
+            $image->custom_data  =  ($dataToStore);
+            $image->save();
+
+            return $this->success([],'Image added successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+ 
+    // SLIDER IMAGE DETAILS
+
+    public function sliderImageDetail(Request $request,$id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid image','Please select valid image');
+            }
+            $data['image_details'] = Image::where('id',$id)->first();
+            if(!empty($data['image_details'])){
+                return $this->success($data,'Image details');
+            }
+            return $this->error('Image not found','Image not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+ 
+    // SLIDER IMAGE UPDATE
+ 
+    public function sliderImageUpdate(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'image_id'     => 'required',
+                // 'redirect_url' => 'required',
+                // 'image'        => 'required|file|mimes:jpeg,webp|max:100000', 
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            } 
+
+            $image_details = Image::where('id',$request->image_id)->first();
+            if(!empty($image_details)){ 
+                if($request->file('image') != null){
+                    $path = public_path('slider_image/' . $image_details->file_name);
+                    if (File::exists($path)) {
+                        if (!is_writable($path)) {
+                            chmod($path, 0777);
+                        }
+                        File::delete($path);
+                    }
+
+                    $media      = $request->file('image');
+                    $extension  = $media->getClientOriginalExtension();
+                    $filename   = 'slider_image_' . random_int(10000, 99999) . '.' . $extension;
+                    $media->move(public_path('slider_image'), $filename);
+                    $image_details->file_name  = $filename;
+                }
+
+                if(isset($request->redirect_url)){
+                    $dataToStore = [
+                        'redirect_url' => $request['redirect_url']
+                    ];
+        
+                    $image_details->custom_data  =  ($dataToStore);
+                }
+
+                $image_details->save();
+
+                return $this->success([],'Image updated successfully');
+            }
+            return $this->error('Image not found','Image not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+ 
+    // SLIDER IMAGE DELETE
+
+    public function sliderImageDelete($id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid image','Please select valid image');
+            }
+            $image_details = Image::where('id',$id)->first();
+            if(!empty($image_details)){
+                $path = public_path('slider_image/' . $image_details->file_name);
+                if (File::exists($path)) {
+                    if (!is_writable($path)) {
+                        chmod($path, 0777);
+                    }
+                    File::delete($path);
+                }
+                $image_details->delete();
+                return $this->success([],'Image delete successfully');
+            }
+            return $this->error('Image not found','Image not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
 }
