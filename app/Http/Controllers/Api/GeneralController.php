@@ -120,29 +120,20 @@ class GeneralController extends BaseController
 
             $sorting = $request->input('sort_by', 'new'); 
 
-            $query   = Product::select('id', 'title','is_active','final_price','original_price','tax','discount','tags','brand');
+            $query = Product::select('id', 'title', 'is_active',
+                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT id FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE 0 END AS varient_id'),
+                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS final_price'),
+                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT original_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE original_price END AS original_price'),
+                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT tax FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE tax END AS tax'),
+                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT discount FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE discount END AS discount'),'tags', 'brand'
+                    );
 
-            // $isVariant = $query->value('is_varient');
-            // if ($isVariant == 1) {
-            //     $query->leftJoin('product_variants', function ($join) {
-            //         $join->on('products.id', '=', 'product_variants.product_id')
-            //             ->where('product_variants.is_active', 1)
-            //             ->where('product_variants.id', function ($subquery) {
-            //                 $subquery->select(\DB::raw('MIN(id)'))
-            //                     ->from('product_variants')
-            //                     ->whereRaw('product_variants.product_id = products.id')
-            //                     ->where('product_variants.is_active', 1);
-            //             });
-            //     })
-            //     ->select$query('products.id', 'products.title', 'products.is_active', 'products.is_varient', 'product_variants.final_price', 'product_variants.original_price', 'product_variants.tax', 'product_variants.discount', 'products.tags', 'products.brand');
-            // }
-            
             if ($sorting == 'popularity') {
                 // Pending
             } elseif ($sorting == 'price_low_to_high') {
-                $query->orderByRaw("CAST(final_price AS DECIMAL(10, 2)) ASC");
+                $query->orderByRaw("CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2)) ASC");
             } elseif ($sorting == 'price_high_to_low') {
-                $query->orderByRaw("CAST(final_price AS DECIMAL(10, 2)) DESC");
+                $query->orderByRaw("CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2)) DESC");
             } else {
                 $query->orderBy('created_at', 'desc');
             }
@@ -175,11 +166,32 @@ class GeneralController extends BaseController
                 $query->whereIn('version',$versionIdArray);
             }
 
+
             if (isset($request->min_budget) && isset($request->max_budget)) {
-                $query->whereBetween('final_price', [$request->min_budget, $request->max_budget]);
+                $query->where(function ($q) use ($request) {
+                    $q->whereBetween(\DB::raw('CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2))'), [$request->min_budget, $request->max_budget]);
+                });
             }
 
             $product_list = $query->where('is_active',1)->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+
+            // Assuming you have fetched the paginated product list already
+            foreach ($product_list as $product) {
+                if ($product->varient_id > 0) {
+                    $variantImage = Image::where('type_id', $product->varient_id)->where('type', 'product_variant_image')->orderBy('id')->value('file_name');
+                    $product->image_url1 = URL('/public/product_variant_image/' . $variantImage);
+                    if($variantImage == ''){
+                        $product->image_url1 = URL('/public/static_image/product_static_image.jpg');
+                    }
+                } else {
+                    $productImage = Image::where('type_id', $product->id)->where('type', 'product_image')->orderBy('id')->value('file_name');
+                    $product->image_url1 = URL('/public/product_image/' . $productImage);
+                    if($productImage == ''){
+                        $product->image_url1 = URL('/public/static_image/product_static_image.jpg');
+                    }
+                }
+                $product->makeHidden('image_url');
+            }
 
             $data['product_list']  =  $product_list->values();
             $data['current_page']  =  $product_list->currentPage();
