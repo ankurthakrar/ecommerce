@@ -12,8 +12,12 @@ use App\Models\ProductVariant;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Helpers\Helper;
+use App\Models\City;
+use App\Models\State;
+use App\Models\User;
 use Exception;
-use Helper; 
 use Validator;
 
 class CustomerController extends BaseController
@@ -371,9 +375,9 @@ class CustomerController extends BaseController
         try{
             $input                = $request->all();
             $validateData = Validator::make($input, [
-                'order'              => 'required|array',
-                'order.*.product_id' => 'required',
-                'order.*.qty'        => 'required',
+                // 'order'              => 'required|array',
+                // 'order.*.product_id' => 'required',
+                // 'order.*.qty'        => 'required',
                 'order_status'      => 'required',
                 'payment_method'    => 'required',
                 'payment_status'    => 'required',
@@ -387,6 +391,8 @@ class CustomerController extends BaseController
             $user_id              = Auth::id();
             $input['user_id']     = $user_id;
 
+            $input['order']          = Cart::where('user_id', $user_id)->get();
+           
             $user_address = UserAddress::where('id',$input['address_id'])->first();
             if(empty($user_address)){
                 return $this->error([],'Address not found');
@@ -399,6 +405,7 @@ class CustomerController extends BaseController
                 'order_status'  => $input['order_status'],
                 'payment_method'=> $input['payment_method'],
                 'payment_status'=> $input['payment_status'],
+                'payment_id'    => $input['payment_id'] ?? null,
                 'address_line_1'=> $user_address->address_line_1,
                 'address_line_2'=> $user_address->address_line_2,
                 'city_id'       => $user_address->city_id,
@@ -455,7 +462,7 @@ class CustomerController extends BaseController
                         'minimum_stock'         =>  $product['minimum_stock'],
                         'colour'                =>  $productVariant['colour'] ?? null,
                         'color_name'            =>  $productVariant['color_name'] ?? null,
-                        'size'             =>  $productVariant['size'] ?? null,
+                        'size'                  =>  $productVariant['size'] ?? null,
                         'available_in'          =>  $productVariant['available_in'] ?? null,
                         'brand'                 =>  $product['brand'],
                         'version'               =>  $product['version'],
@@ -468,7 +475,36 @@ class CustomerController extends BaseController
                     ];
                 }
                 OrderItem::insert($orderItemsData);
+                $cartItem         = Cart::where('user_id', $user_id)->delete();
 
+                if(($input['payment_method'] == 'online' && $input['payment_status'] == 'approved') || ($input['payment_method'] == 'cod' && $input['payment_status'] == 'pending')){
+                    // $key = Auth::user()->email;
+                    // $input1['subject']          =  "Order place successfully";
+                    // $input1['order_id']         =  $order_data['id'];
+                    // $input1['created_at']       =  $order_data['created_at'];
+                    // $input1['first_name']       =  Auth::user()->first_name;
+                    // $input1['last_name']        =  Auth::user()->last_name;
+                    // $input1['address_line_1']   =  $order_data['address_line_1'];
+                    // $input1['address_line_2']   =  $order_data['address_line_2'];
+                    // $input1['city']             =  City::where('id',$order_data['city_id'])->first()->value('name'); 
+                    // $input1['state_name']       =  State::where('id',$order_data['state_id'])->first()->value('name');
+                    // $input1['zipcode']          =  $order_data['pincode'];
+                    // $input1['payment_method']   =  $order_data['payment_method'];
+                    // $input1['total_amount']     =  $order_data['total_amount'];
+                    // $input1['order_items']      =  array_map(function ($element) {
+                    //                                     return [
+                    //                                         "title" => $element["title"],
+                    //                                         "qty" => $element["qty"],
+                    //                                         "final_price" => $element["final_price"],
+                    //                                     ];
+                    //                                 }, $orderItemsData);
+                    // $email_data   = [
+                    //     'email'                 => $key,
+                    //     'order_invoice_to_user' => 'order_invoice_to_user',
+                    //     'order'                 => $input1,
+                    // ];
+                    // Helper::sendMail('emails.order_invoice_to_user', $email_data, $key, '');
+                }
                 return $this->success([],'Order successfully');
             }
             return $this->error('Something went wrong','Something went wrong');
@@ -513,6 +549,84 @@ class CustomerController extends BaseController
                 return $this->success($data,'Order details');
             }
             return $this->error('Order not found','Order not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+    
+    // ORDER DETAILS
+
+    public function getUserProfile()
+    {
+        try{
+            $user_id               = Auth::id();
+            $data['user_details']  = User::where('id',$user_id)->first();
+            if(!empty($data['user_details'])){
+                return $this->success($data,'User details');
+            }
+            return $this->error('Something went wrong','Something went wrong');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+    
+    // USER DETAIL UPDATE
+
+    public function userDetailUpdate(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'first_name'      => 'required|string|max:255',
+                'last_name'       => 'required|string|max:255',
+                'email'           => 'sometimes|nullable|email|max:255|unique:users,email,'.Auth::id(),
+                'phone_no'        => 'sometimes|nullable|string|regex:/^([0-9\s\-\+\(\)]*)$/|max:13|unique:users,phone_no,'.Auth::id(),
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $user_id               = Auth::id();
+            $data['user_details']  = User::where('id',$user_id)->first();
+            if(!empty($data['user_details'])){
+                $data['user_details']->update($request->all());
+                return $this->success($data,'User details');
+            }
+            return $this->error('Something went wrong','Something went wrong');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+  
+    // USER CHANGE PASSWORD
+
+    public function changePassword(Request $request)
+    {
+        try{
+            $validateData = Validator::make($request->all(), [
+                'old_password'        => 'nullable|string|min:8|bail|regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!]).*$/',
+                'new_password'        => 'required|string|min:8|bail|regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!]).*$/',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $user_id               = Auth::id();
+            $user_details          = User::where('id',$user_id)->first();
+
+            if(!empty($user_details->password) && Hash::check($request->old_password, $user_details->password)) {
+                $user_details->update(['password'=> bcrypt($request->new_password)]);
+                return $this->success([],'User details');
+            }
+            if(empty($user_details->password)){
+                $user_details->update(['password'=> bcrypt($request->new_password)]);
+                return $this->success([],'User details');
+            }
+            return $this->error('Old password is wrong','Old password is wrong');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }

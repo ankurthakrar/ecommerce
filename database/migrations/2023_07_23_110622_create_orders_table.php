@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('order_status')->default('pending');
             $table->string('payment_method')->nullable();
             $table->string('payment_status')->default('pending');
+            $table->string('payment_id')->nullable();
             $table->longText('address_line_1')->nullable();
             $table->longText('address_line_2')->nullable();
             $table->bigInteger('city_id')->nullable();

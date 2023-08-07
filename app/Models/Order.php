@@ -17,6 +17,7 @@ class Order extends Model
         'order_status',
         'payment_method',
         'payment_status',
+        'payment_id',
         'address_line_1',
         'address_line_2',
         'city_id',

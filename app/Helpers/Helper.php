@@ -7,6 +7,7 @@ use App\Mail\EmailVerificationMail;
 use App\Mail\ResetPasswordEmail;
 use App\Mail\WelcomeEmailAdmin;
 use App\Mail\WelcomeEmailUser;
+use App\Mail\OrderInvoiceToUser;
 
 class Helper
 {
@@ -49,6 +50,12 @@ class Helper
         elseif (isset($data['reset_link'])) {
             $reset_link = $data['reset_link'];
             Mail::to($data['email'])->send(new ResetPasswordEmail($reset_link));
+        }
+       
+        // For order place to user
+
+        elseif (isset($data['order_invoice_to_user'])) { 
+            Mail::to($data['email'])->send(new OrderInvoiceToUser($data['order']));
         }
         return true;
     }

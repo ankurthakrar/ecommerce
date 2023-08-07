@@ -103,6 +103,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-order-list', [CustomerController::class, 'getOrderList'])->name('get-order-list');
     Route::get('get-order-details/{id}', [CustomerController::class, 'getOrderDetails'])->name('get-order-details');
     
+    // User Profile
+    Route::get('get-user-profile', [CustomerController::class, 'getUserProfile'])->name('get-user-profile');
+    Route::post('user-detail-update', [CustomerController::class, 'userDetailUpdate'])->name('user-detail-update');
+    Route::post('change-password', [CustomerController::class, 'changePassword'])->name('change-password');
+    
     Route::get('log-out', [CustomerController::class,'logout'])->name('log-out');
 });
 
