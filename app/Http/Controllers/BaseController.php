@@ -66,7 +66,7 @@ class BaseController extends Controller
 		];
 	}
 	
-	public function getOriginalAmount($finalPrice,$taxPercentage,$discountPercentage){
+	public function getOriginalAmountOld($finalPrice,$taxPercentage,$discountPercentage){
 		// Calculate tax amount
 		$taxRate = $taxPercentage / 100;
 		$taxAmount = round($finalPrice / (1 + $taxRate) * $taxRate, 2);
@@ -85,6 +85,27 @@ class BaseController extends Controller
 			'tax_amount'=> $taxAmount,
 			'discount_amount'=> $discountAmount,
 			'original_price'=> $originalAmount,
+		];
+	}
+	
+	public function getOriginalAmount($finalPrice,$taxPercentage,$discountPercentage){
+		// Calculate discount amount
+		$discountRate = $discountPercentage / 100;
+		$discountAmount = round($finalPrice * $discountRate, 2);
+
+		$after_discount_amount = $finalPrice - $discountAmount;
+
+	    // Calculate tax amount
+		$taxRate = $taxPercentage / 100;
+		$taxAmount = round($after_discount_amount / (1 + $taxRate) * $taxRate, 2);
+		$without_tax_amount = $after_discount_amount - $taxAmount;
+		return $data = [
+			'tax'=>$taxPercentage,
+			'discount'=>$discountPercentage,
+			'tax_amount'=> $taxAmount,
+			'discount_amount'=> $discountAmount,
+			'original_price'=> $without_tax_amount,
+			'after_discount_amount'=> $after_discount_amount,
 		];
 	}
 

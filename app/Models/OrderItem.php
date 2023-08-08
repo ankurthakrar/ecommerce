@@ -23,6 +23,7 @@ class OrderItem extends Model
         'tax',
         'discount_amount',
         'tax_amount',
+        'after_discount_amount',
         'original_price',
         'pay_booking_price',
         'pay_booking_price_tax',

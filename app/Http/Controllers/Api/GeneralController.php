@@ -123,6 +123,7 @@ class GeneralController extends BaseController
             $query = Product::select('id', 'title', 'is_active',
                         \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT id FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE 0 END AS varient_id'),
                         \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS final_price'),
+                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT after_discount_amount FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE after_discount_amount END AS after_discount_amount'),
                         \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT original_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE original_price END AS original_price'),
                         \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT tax FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE tax END AS tax'),
                         \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT discount FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE discount END AS discount'),'tags', 'brand'

@@ -38,6 +38,11 @@ class CustomerController extends BaseController
                                 ->select('carts.id', 'carts.user_id', 'carts.product_id', 'carts.product_variation_id', 'carts.qty','carts.is_booking_price', 'products.title')
                                 ->selectRaw('IFNULL(product_variants.final_price, products.final_price) as final_price')
                                 ->selectRaw('IF(product_variants.final_price IS NULL, 0, 1) as is_variant')
+                                ->selectRaw('IFNULL(product_variants.discount, products.discount) as discount')
+                                ->selectRaw('IFNULL(product_variants.after_discount_amount, products.after_discount_amount) as after_discount_amount')
+                                ->selectRaw('IFNULL(product_variants.colour, null) as color')
+                                ->selectRaw('IFNULL(product_variants.color_name, null) as color_name')
+                                ->selectRaw('IFNULL(product_variants.size, null) as size')
                                 ->selectRaw("
                                         CASE
                                             WHEN (product_variants.id IS NOT NULL AND carts.product_id = product_variants.product_id) THEN (
@@ -75,8 +80,8 @@ class CustomerController extends BaseController
             });
 
             $data['total'] = $data['cartItems']->sum(function ($item) { 
-                                $finalPrice = $item->booking_price > 0 ? $item->booking_price : $item->final_price;
-                                return $item->qty * $finalPrice;
+                                $after_discount_amount = $item->booking_price > 0 ? $item->booking_price : $item->after_discount_amount;
+                                return $item->qty * $after_discount_amount;
                             });
             
             return $this->success($data,'Cart item list');
@@ -320,6 +325,11 @@ class CustomerController extends BaseController
                                 ->select('carts.id', 'carts.user_id', 'carts.product_id', 'carts.product_variation_id', 'carts.qty','carts.is_booking_price', 'products.title')
                                 ->selectRaw('IFNULL(product_variants.final_price, products.final_price) as final_price')
                                 ->selectRaw('IF(product_variants.final_price IS NULL, 0, 1) as is_variant')
+                                ->selectRaw('IFNULL(product_variants.discount, products.discount) as discount')
+                                ->selectRaw('IFNULL(product_variants.after_discount_amount, products.after_discount_amount) as after_discount_amount')
+                                ->selectRaw('IFNULL(product_variants.colour, null) as color')
+                                ->selectRaw('IFNULL(product_variants.color_name, null) as color_name')
+                                ->selectRaw('IFNULL(product_variants.size, null) as size')
                                 ->selectRaw("
                                         CASE
                                             WHEN (product_variants.id IS NOT NULL AND carts.product_id = product_variants.product_id) THEN (
@@ -357,8 +367,8 @@ class CustomerController extends BaseController
             });
 
             $data['total'] = $data['cartItems']->sum(function ($item) { 
-                                $finalPrice = $item->booking_price > 0 ? $item->booking_price : $item->final_price;
-                                return $item->qty * $finalPrice;
+                                $after_discount_amount = $item->booking_price > 0 ? $item->booking_price : $item->after_discount_amount;
+                                return $item->qty * $after_discount_amount;
                             });
 
             $data['address_list'] = UserAddress::where('user_id',$user_id)->get();
@@ -423,13 +433,13 @@ class CustomerController extends BaseController
                     $productId = $item['product_id'];
                     $productVariantId = $item['product_variation_id'] ?? null;
                 
-                    $product = Product::select('title', 'category_id', 'final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'brand', 'version', 'tags', 'description', 'description1', 'description2', 'is_active', 'is_varient')
+                    $product = Product::select('title', 'category_id', 'final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'after_discount_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'brand', 'version', 'tags', 'description', 'description1', 'description2', 'is_active', 'is_varient')
                         ->where('id', $productId)
                         ->first();
                 
                     if ($productVariantId) {
 
-                        $productVariant = ProductVariant::select('final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'colour', 'color_name', 'size', 'available_in')
+                        $productVariant = ProductVariant::select('final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'after_discount_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'colour', 'color_name', 'size', 'available_in')
                             ->where('id', $productVariantId)
                             ->first();
                 
@@ -453,6 +463,7 @@ class CustomerController extends BaseController
                         'tax'                   =>  $product['tax'],
                         'discount_amount'       =>  $product['discount_amount'],
                         'tax_amount'            =>  $product['tax_amount'],
+                        'after_discount_amount' =>  $product['after_discount_amount'],
                         'original_price'        =>  $product['original_price'],
                         'pay_booking_price'     =>  $product['pay_booking_price'],
                         'pay_booking_price_tax' =>  $product['pay_booking_price_tax'],
