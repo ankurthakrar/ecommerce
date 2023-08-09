@@ -214,10 +214,16 @@ class GeneralController extends BaseController
             if ($id < 1) {
                 return $this->error('Please select valid product','Please select valid product');
             }
-            $data['prodct_details'] = Product::with(['variant'])->where('id',$id)->first();
-            if(!empty($data['prodct_details'])){
-                $data['prodct_details']['category_id_array'] = explode(',',$data['prodct_details']['category_id']);
-                $data['prodct_details']['tags_array'] = explode(',',$data['prodct_details']['tags']);
+            // $data['prodct_details'] = Product::with(['variant'])->where('id',$id)->first();
+            $data['product_details'] =  Product::with(['variant' => function($q) {
+                                            $q->where('is_active', '1');
+                                        }])->where('id', $id)->first();
+            if(!empty($data['product_details'])){
+                if($data['product_details']['is_varient'] == 1 && $data['product_details']->variant->count() == 0){
+                    return $this->error('Product Is Inactive','Product Is Inactive');
+                }
+                $data['product_details']['category_id_array'] = explode(',',$data['product_details']['category_id']);
+                $data['product_details']['tags_array'] = explode(',',$data['product_details']['tags']);
                 return $this->success($data,'Product details');
             }
             return $this->error('Product not found','Product not found');

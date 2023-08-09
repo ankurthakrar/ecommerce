@@ -199,8 +199,11 @@ class CustomerController extends BaseController
     {
         try{
             $validateData = Validator::make($request->all(), [
+                'full_name'         => 'required',
+                'email'             => 'required|email|max:255',
+                'phone_no'          => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/|max:13', 
                 'address_line_1'    => 'required',
-                'address_line_2'    => 'required',
+                // 'address_line_2'    => 'required',
                 'city_id'           => 'required',
                 'state_id'          => 'required',
                 'pincode'           => 'required|max:7',
@@ -248,8 +251,11 @@ class CustomerController extends BaseController
         try{
             $validateData = Validator::make($request->all(), [
                 'address_id'        => 'required',
+                'full_name'         => 'required',
+                'email'             => 'required|email|max:255',
+                'phone_no'          => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/|max:13', 
                 'address_line_1'    => 'required',
-                'address_line_2'    => 'required',
+                // 'address_line_2'    => 'required',
                 'city_id'           => 'required',
                 'state_id'          => 'required',
                 'pincode'           => 'required|max:7',
@@ -416,6 +422,9 @@ class CustomerController extends BaseController
                 'payment_method'=> $input['payment_method'],
                 'payment_status'=> $input['payment_status'],
                 'payment_id'    => $input['payment_id'] ?? null,
+                'full_name'     => $user_address->full_name,
+                'email'         => $user_address->email,
+                'phone_no'      => $user_address->phone_no,
                 'address_line_1'=> $user_address->address_line_1,
                 'address_line_2'=> $user_address->address_line_2,
                 'city_id'       => $user_address->city_id,
@@ -495,6 +504,9 @@ class CustomerController extends BaseController
                     // $input1['created_at']       =  $order_data['created_at'];
                     // $input1['first_name']       =  Auth::user()->first_name;
                     // $input1['last_name']        =  Auth::user()->last_name;
+                    // $input1['full_name']        =  $order_data['full_name'],
+                    // $input1['email']            =  $order_data['email'],
+                    // $input1['phone_no']         =  $order_data['phone_no'],
                     // $input1['address_line_1']   =  $order_data['address_line_1'];
                     // $input1['address_line_2']   =  $order_data['address_line_2'];
                     // $input1['city']             =  City::where('id',$order_data['city_id'])->first()->value('name'); 
@@ -531,7 +543,7 @@ class CustomerController extends BaseController
     {
         try{
             $user_id               = Auth::id();
-            $order_list            = Order::where('user_id',$user_id)->latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+            $order_list            = Order::with('orderItems')->where('user_id',$user_id)->latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
 
             $data['order_list']    =  $order_list->values();
             $data['current_page']  =  $order_list->currentPage();
