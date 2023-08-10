@@ -67,6 +67,40 @@ class AuthController extends BaseController
                     return $this->error($can_not_find,$can_not_find);
                 }
 
+                $apiKey       = urlencode(config('app.txt_lcl_api'));
+                $senderID     = urlencode(config('app.txt_lcl_sender')); 
+                // $apiKey       = urlencode('NDE2NDYzNDM3YTc1NTY3MTU1NjU3NDY5MzAzMDczMzI=');
+                // $senderID     = urlencode('HBSEPL'); 
+                $message      = "Use OTP $otp for your Hub Sports account. Enter this OTP on the website to verify your mobile.";
+                $key      = "+91".$key;
+
+                // API URL
+                $url = "https://api.textlocal.in/send";
+
+                // Prepare the data for the API request
+                $data = [
+                    'apikey' => $apiKey,
+                    'sender' => $senderID,
+                    'message' => $message,
+                    'numbers' => $key,
+                ];
+
+                // Make the API request using cURL
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                // Process the API response
+                $responseData = json_decode($response, true);
+                if ($responseData && isset($responseData['status']) && strtolower($responseData['status']) !== 'success') {
+                    return $this->error('Something went wrong','Something went wrong');
+                } 
+
             } else {
                 return $this->error('Please enter email or phone number','Required parameter');
             }

@@ -29,6 +29,25 @@ class Order extends Model
         'address_type',
     ];
 
+    // APPEND
+    protected $appends = ['state_name','city_name'];
+
+    public function getStateNameAttribute()
+    {
+        if (!empty($this->state_id)) {
+            return State::where('id',$this->state_id)->pluck('name')->first();
+        }
+        return null;
+    }
+    
+    public function getCityNameAttribute()
+    {
+        if (!empty($this->city_id)) {
+            return City::where('id',$this->city_id)->pluck('name')->first();
+        }
+        return null;
+    }
+    
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class, 'order_id');

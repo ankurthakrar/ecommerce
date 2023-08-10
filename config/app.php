@@ -195,5 +195,7 @@ return [
     ])->toArray(),
 
     'admin_mail' => env('ADMIN_EMAIL','admin@gmail.com'),
-    'app_name'  => env('APP_NAME','ecommerce')
+    'app_name'  => env('APP_NAME','ecommerce'),
+    'txt_lcl_api' => env('TEXT_LOCAL_API','NDE2NDYzNDM3YTc1NTY3MTU1NjU3NDY5MzAzMDczMzI='),
+    'txt_lcl_sender' => env('TEXT_LOCAL_SENDER_ID','HBSEPL'),
 ];
