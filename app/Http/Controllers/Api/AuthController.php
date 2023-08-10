@@ -72,7 +72,6 @@ class AuthController extends BaseController
                 // $apiKey       = urlencode('NDE2NDYzNDM3YTc1NTY3MTU1NjU3NDY5MzAzMDczMzI=');
                 // $senderID     = urlencode('HBSEPL'); 
                 $message      = "Use OTP $otp for your Hub Sports account. Enter this OTP on the website to verify your mobile.";
-                $key      = "+91".$key;
 
                 // API URL
                 $url = "https://api.textlocal.in/send";
