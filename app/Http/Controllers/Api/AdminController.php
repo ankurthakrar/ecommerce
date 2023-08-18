@@ -482,6 +482,17 @@ class AdminController extends BaseController
             if(!empty($data['prodct_details'])){
                 $data['prodct_details']['category_id_array'] = explode(',',$data['prodct_details']['category_id']);
                 $data['prodct_details']['tags_array'] = explode(',',$data['prodct_details']['tags']);
+                
+                if(!empty($data['prodct_details']->variant)){
+                    $data['prodct_details']->variant->transform(function ($variant) {
+                        foreach ($variant->toArray() as $column => $value) {
+                            if ($value === null) {
+                                $variant->$column = ''; 
+                            }
+                        }
+                        return $variant;
+                    });
+                }
                 return $this->success($data,'Product details');
             }
             return $this->error('Product not found','Product not found');
