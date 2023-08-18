@@ -563,6 +563,14 @@ class AdminController extends BaseController
                 $variant_data = $variant_details->update($input);
 
                 $data1['product_variant'] =  ProductVariant::where('product_id',$request->product_id)->get();
+                $data1['product_variant']->transform(function ($variant) {
+                    foreach ($variant->toArray() as $column => $value) {
+                        if ($value === null) {
+                            $variant->$column = ''; 
+                        }
+                    }
+                    return $variant;
+                });
                 return $this->success($data1,'Variant updated successfully');
             }
             return $this->error('Variant not found','Variant not found');
@@ -624,6 +632,46 @@ class AdminController extends BaseController
         return $this->error('Something went wrong','Something went wrong');
     }
    
+    //  VARIANT ADD
+
+    public function  variantAdd(Request $request){
+        try{
+            $validateData = Validator::make($request->all(), [
+                'product_id'  => 'required',
+                'final_price' => 'required', 
+                'sku'         => 'required|unique:product_variants',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            } 
+
+            $finalPrice = $request['final_price'];
+            $taxPercentage = isset($request['tax']) ? $request['tax'] : 0;
+            $discountPercentage = isset($request['discount']) ? $request['discount'] : 0;
+
+            $data = $this->getOriginalAmount($finalPrice,$taxPercentage,$discountPercentage);
+            $variant = array_merge($request->all(),$data);
+
+            $variant['product_id'] = $request->product_id; 
+            $variantModel = ProductVariant::create($variant);
+
+            $data1['product_variant'] =  ProductVariant::where('product_id',$request->product_id)->get();
+            $data1['product_variant']->transform(function ($variant) {
+                foreach ($variant->toArray() as $column => $value) {
+                    if ($value === null) {
+                        $variant->$column = ''; 
+                    }
+                }
+                return $variant;
+            });
+            return $this->success($data1,'Variant added successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
     //  IMAGE DELETE
 
     public function  productImageDelete(Request $request){
