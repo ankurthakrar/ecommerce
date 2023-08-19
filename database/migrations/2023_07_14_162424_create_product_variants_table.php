@@ -27,8 +27,8 @@ return new class extends Migration
             $table->string('pay_booking_price_tax')->nullable();
             $table->string('sku')->nullable();
             $table->string('weight')->nullable();
-            $table->string('stock')->nullable();
-            $table->string('minimum_stock')->nullable();
+            $table->string('stock')->default(0);
+            $table->string('minimum_stock')->default(0);
             $table->integer('is_active')->default(1);
             $table->string('colour')->nullable();
             $table->string('color_name')->nullable();

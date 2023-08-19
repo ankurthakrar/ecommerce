@@ -445,18 +445,25 @@ class CustomerController extends BaseController
                     $product = Product::select('title', 'category_id', 'final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'after_discount_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'brand', 'version', 'tags', 'description', 'description1', 'description2', 'is_active', 'is_varient')
                         ->where('id', $productId)
                         ->first();
-                
-                    if ($productVariantId) {
 
+                    $remaining_variant_stock = null;
+                    $remaining_product_stock = null;
+                    if ($productVariantId) {
+                        
                         $productVariant = ProductVariant::select('final_price', 'discount', 'tax', 'discount_amount', 'tax_amount', 'after_discount_amount', 'original_price', 'pay_booking_price', 'pay_booking_price_tax', 'sku', 'weight', 'stock', 'minimum_stock', 'colour', 'color_name', 'size', 'available_in')
-                            ->where('id', $productVariantId)
-                            ->first();
-                
+                        ->where('id', $productVariantId)
+                        ->first();
+                        
                         if ($productVariant) {
                             $product = $product->toArray();
                             $product = array_merge($product, $productVariant->toArray());
                         }
-                    }
+                        if($productVariant->stock > 0){
+                           $remaining_variant_stock =  $productVariant->stock - $item['qty'];
+                        }
+                    }elseif($product->stock > 0){
+                        $remaining_product_stock =  $product->stock - $item['qty'];
+                    };
 
                     $orderItemsData[] = [
                         'user_id'               =>  $user_id,
@@ -493,6 +500,13 @@ class CustomerController extends BaseController
                         'created_at'            =>  now(),
                         'updated_at'            =>  now(),
                     ];
+
+                    if($remaining_product_stock !== null){
+                        Product::where('id', $productId)->update(['stock'=>$remaining_product_stock]);
+                    }
+                    if($remaining_variant_stock !== null){
+                        ProductVariant::where('id', $productVariantId)->update(['stock'=>$remaining_variant_stock]);
+                    }
                 }
                 OrderItem::insert($orderItemsData);
                 $cartItem         = Cart::where('user_id', $user_id)->delete();

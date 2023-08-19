@@ -667,6 +667,13 @@ class AdminController extends BaseController
             $variant['product_id'] = $request->product_id; 
             $variantModel = ProductVariant::create($variant);
 
+            $image = isset($variant['image']) ? $variant['image'] : null;
+            if (!empty($image)) {
+                $folderPath = public_path().'/product_variant_image';
+                $image_data = $this->uploadMediaFiles($image,$variantModel->id,'pro_vari_','product_variant_image',$folderPath);
+                Image::insert($image_data);
+            }
+
             $data1['product_variant'] =  ProductVariant::where('product_id',$request->product_id)->get();
             $data1['product_variant']->transform(function ($variant) {
                 foreach ($variant->toArray() as $column => $value) {
