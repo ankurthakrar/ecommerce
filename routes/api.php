@@ -63,6 +63,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('variant-delete', [AdminController::class,'variantDelete'])->name('variant-delete');
     Route::post('product-image-delete', [AdminController::class,'productImageDelete'])->name('product-image-delete');
     Route::post('variant-add', [AdminController::class,'variantAdd'])->name('variant-add');
+    Route::post('image-list', [AdminController::class, 'imageList'])->name('image-list');
     
     // Order
     

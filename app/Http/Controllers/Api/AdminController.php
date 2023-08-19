@@ -690,6 +690,18 @@ class AdminController extends BaseController
         return $this->error('Something went wrong','Something went wrong');
     }
 
+    //  IMAGE LIST
+
+    public function  imageList(Request $request){
+        try{
+            $image_details = Image::where('type_id',$request->type_id)->where('type',$request->type)->get();
+            return $this->success($image_details,'Image list.');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
     //  IMAGE DELETE
 
     public function  productImageDelete(Request $request){
