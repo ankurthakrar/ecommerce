@@ -154,9 +154,13 @@ class AuthController extends BaseController
                     $data['is_user_exist'] = 0;
                     
                     if ($request->type == 'login') {
-                        $user = User::where('email', '=', $request->email)
-                        ->orWhere('phone_no','=', $request->phone_no)
-                        ->select('id','email', 'phone_no')
+                        $user = User::where(function ($query) use ($request) {
+                            $query->whereNotNull('email')
+                                  ->where('email', '=', $request->email)
+                                  ->orWhereNotNull('phone_no')
+                                  ->where('phone_no', '=', $request->phone_no);
+                        })
+                        ->select('id', 'email', 'phone_no')
                         ->first();
 
                         if($user){
