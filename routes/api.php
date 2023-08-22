@@ -86,6 +86,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get('cart-item-list', [CustomerController::class, 'cartItemList'])->name('cart-item-list');
     Route::post('cart-item-store', [CustomerController::class, 'cartItemStore'])->name('cart-item-store');
     Route::post('cart-item-delete', [CustomerController::class, 'cartItemDelete'])->name('cart-item-delete');
+
+    // Wishlist
+
+    Route::get('wishlist', [CustomerController::class, 'wishList'])->name('wishlist');
+    Route::post('wishlist-store', [CustomerController::class, 'wishListStore'])->name('wishlist-store');
+    Route::post('wishlist-delete', [CustomerController::class, 'wishListDelete'])->name('wishlist-delete');
     
     // Address
 

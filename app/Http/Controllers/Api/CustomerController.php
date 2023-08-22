@@ -17,6 +17,7 @@ use App\Helpers\Helper;
 use App\Models\City;
 use App\Models\State;
 use App\Models\User;
+use App\Models\Wishlist;
 use Exception;
 use Validator;
 
@@ -173,6 +174,136 @@ class CustomerController extends BaseController
             }
 
             return $this->success([],'Item deleted from cart successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // WISHLIST
+
+    public function wishList(Request $request){
+        try{
+            $user_id            = Auth::user()->id;
+
+            $data['wishlists'] = Wishlist::where('user_id', $user_id)
+                                    ->Join('products', 'wishlists.product_id', '=', 'products.id')
+                                    ->leftJoin('product_variants', function ($join) {
+                                        $join->on('wishlists.product_variation_id', '=', 'product_variants.id')
+                                            ->whereNotNull('wishlists.product_variation_id')
+                                            ->whereColumn('wishlists.product_id', 'product_variants.product_id');
+                                    })
+                                    ->select('wishlists.id', 'wishlists.user_id', 'wishlists.product_id', 'wishlists.product_variation_id', 'products.title')
+                                    ->selectRaw('IFNULL(product_variants.final_price, products.final_price) as final_price')
+                                    ->selectRaw('IF(product_variants.final_price IS NULL, 0, 1) as is_variant')
+                                    ->selectRaw('IFNULL(product_variants.discount, products.discount) as discount')
+                                    ->selectRaw('IFNULL(product_variants.after_discount_amount, products.after_discount_amount) as after_discount_amount')
+                                    ->selectRaw('IFNULL(product_variants.colour, null) as color')
+                                    ->selectRaw('IFNULL(product_variants.color_name, null) as color_name')
+                                    ->selectRaw('IFNULL(product_variants.size, null) as size')
+                                    ->selectRaw("
+                                            CASE
+                                                WHEN (product_variants.id IS NOT NULL AND wishlists.product_id = product_variants.product_id) THEN (
+                                                    SELECT file_name FROM images WHERE type = 'product_variant_image' AND type_id = wishlists.product_variation_id LIMIT 1
+                                                )
+                                                ELSE (
+                                                    SELECT file_name FROM images WHERE type = 'product_image' AND type_id = wishlists.product_id LIMIT 1
+                                                )
+                                            END as image_url
+                                        ")
+                                    ->where(function ($query) {
+                                        $query->where(function ($q) {
+                                            $q->whereNull('product_variants.id')
+                                                ->whereNull('wishlists.product_variation_id');
+                                        })
+                                        ->orWhere(function ($q) {
+                                            $q->whereNotNull('product_variants.id')
+                                                ->whereColumn('wishlists.product_id', 'product_variants.product_id');
+                                        });
+                                    })
+                                    ->get(); 
+
+            $data['wishlists']->transform(function ($item) {
+                $item->wish_list_url = $item->getWishListImageUrlAttribute();
+                return $item;
+            });
+            return $this->success($data,'Wishlist');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // WISHLIST STORE
+
+    public function wishlistStore(Request $request){
+        try{
+            $input            = $request->all();
+            $user_id          = Auth::user()->id;
+
+            $validateData = Validator::make($input, [
+                'product_id' => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $input['user_id']              = $user_id;
+            $input['product_id']           = $request->product_id;
+            $input['product_variation_id'] = $request->product_variation_id ?? null;
+            $input['type']                 = $request->product_variation_id ? 'product_variant' : 'product' ;
+
+            $wishlist = Wishlist::where('user_id', $user_id)
+                        ->where('product_id', $input['product_id'])
+                        ->where(function ($query) use ($input) {
+                            $query->where('product_variation_id', $input['product_variation_id'] ?? null);
+                        })
+                        ->first();
+    
+            if ($wishlist) {
+                return $this->success([],'Item is already into wishlist');
+            }
+
+            Wishlist::create($input); 
+            return $this->success([],'Item added to wishlist successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // WISHLIST DELETE
+
+    public function wishlistDelete(Request $request){
+        try{
+            $validateData = Validator::make($request->all(), [
+                'product_id'            => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $input            = $request->all();
+            $user_id          = Auth::user()->id;
+            $input['user_id'] = $user_id;
+            $wishlistItem     = Wishlist::where('user_id', $user_id)
+                                ->where('product_id', $input['product_id'])
+                                ->where(function ($query) use ($input) {
+                                    $query->where('product_variation_id', $input['product_variation_id'] ?? null)
+                                        ->orWhereNull('product_variation_id');
+                                })
+                                ->first();
+        
+            if ($wishlistItem) {
+                $wishlistItem->delete();
+                return $this->success([], 'Wishlist item deleted successfully');
+            } else {
+                return $this->error([], 'No data found', 404);
+            }
+
+            return $this->success([],'Item deleted from wishlist successfully');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }
@@ -412,6 +543,13 @@ class CustomerController extends BaseController
             $user_address = UserAddress::where('id',$input['address_id'])->first();
             if(empty($user_address)){
                 return $this->error([],'Address not found');
+            }
+
+            $first_name = Auth::user()->first_name;
+            $last_name = Auth::user()->last_name;
+            if(empty($first_name) && empty($last_name)){
+                $full_name = explode(' ', $user_address->full_name, 2);
+                Auth::user()->update(['first_name' => $full_name[0],'last_name' => $full_name[1] ?? null]);
             }
           
             $order = new Order([
