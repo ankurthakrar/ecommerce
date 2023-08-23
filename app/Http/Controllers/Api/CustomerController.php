@@ -425,7 +425,7 @@ class CustomerController extends BaseController
                 return $this->error($validateData->errors(),'Validation error',422);
             }
 
-            if(UserAddress::where('id',Auth::user()->id)->count() < 2){
+            if(UserAddress::where('user_id',Auth::user()->id)->count() < 2){
                 return $this->error('You can not delete main address', 'You can not delete main address', 404);
             }
 

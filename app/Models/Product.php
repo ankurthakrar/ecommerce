@@ -63,7 +63,7 @@ class Product extends Model
     public function getBrandNameAttribute()
     {
         if ((int)$this->brand > 0) {
-            return Brand::where('id',$this->brand)->first()->value('name');
+            return Brand::where('id',$this->brand)->pluck('name')->first();
         }
         return "";
     }

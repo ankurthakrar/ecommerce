@@ -166,7 +166,11 @@ class GeneralController extends BaseController
                 $versionIdArray = $request->version;
                 $query->whereIn('version',$versionIdArray);
             }
-
+          
+            if (isset($request->search_title)) {
+                $search_title = $request->search_title;
+                $query->where('title','LIKE','%'.$search_title.'%');
+            }
 
             if (isset($request->min_budget) && isset($request->max_budget)) {
                 $query->where(function ($q) use ($request) {
