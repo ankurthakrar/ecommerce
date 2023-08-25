@@ -111,6 +111,13 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-order-list', [CustomerController::class, 'getOrderList'])->name('get-order-list');
     Route::get('get-order-details/{id}', [CustomerController::class, 'getOrderDetails'])->name('get-order-details');
     
+    // Upload Document
+    
+    Route::get('get-document-list', [CustomerController::class, 'getDocumentList'])->name('get-document-list');
+    Route::post('upload-document', [CustomerController::class, 'uploadDocument'])->name('upload-document');
+    Route::post('update-document', [CustomerController::class, 'updateDocument'])->name('update-document');
+    Route::get('get-document-detail/{id}', [CustomerController::class, 'getDocmentDetails'])->name('get-order-details');
+
     // User Profile
     Route::get('get-user-profile', [CustomerController::class, 'getUserProfile'])->name('get-user-profile');
     Route::post('user-detail-update', [CustomerController::class, 'userDetailUpdate'])->name('user-detail-update');

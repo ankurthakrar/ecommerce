@@ -17,6 +17,7 @@ use App\Helpers\Helper;
 use App\Models\City;
 use App\Models\State;
 use App\Models\User;
+use App\Models\UserDocument;
 use App\Models\Wishlist;
 use Exception;
 use Validator;
@@ -262,7 +263,8 @@ class CustomerController extends BaseController
                         ->first();
     
             if ($wishlist) {
-                return $this->success([],'Item is already into wishlist');
+                $wishlist->delete();
+                return $this->success([],'Item is removed from wishlist');
             }
 
             Wishlist::create($input); 
@@ -703,7 +705,7 @@ class CustomerController extends BaseController
             $data['total']         =  $order_list->total();
             $data['last_page']     =  $order_list->lastPage();
 
-            return $this->success($data,'Address list');
+            return $this->success($data,'Order list');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }
@@ -730,7 +732,137 @@ class CustomerController extends BaseController
         return $this->error('Something went wrong','Something went wrong');
     }
     
-    // ORDER DETAILS
+    //  DOCUMENT LIST
+
+    public function getDocumentList(Request $request)
+    {
+        try{
+            $user_id               = Auth::id();
+            $document_list         = UserDocument::where('user_id',$user_id)->latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+
+            $data['document_list'] =  $document_list->values();
+            $data['current_page']  =  $document_list->currentPage();
+            $data['per_page']      =  $document_list->perPage();
+            $data['total']         =  $document_list->total();
+            $data['last_page']     =  $document_list->lastPage();
+
+            return $this->success($data,'Document list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // DOCUMENT DETAILS
+
+    public function getDocmentDetails(Request $request,$id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid document','Please select valid document');
+            }
+            $user_id               = Auth::id();
+            $data['document_details'] = UserDocument::where('id',$id)->where('user_id',$user_id)->first();
+            if(!empty($data['document_details'])){
+                return $this->success($data,'Document details');
+            }
+            return $this->error('Document not found','Document not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // DOCUMENT UPLOAD
+
+    public function uploadDocument(Request $request){
+        try{
+            $input            = $request->all();
+            $user_id          = Auth::user()->id;
+
+            $validateData = Validator::make($input, [
+                'title'      => 'required|unique:user_documents,title,NULL,id,user_id,' . auth()->id(), 
+                'document'   => 'required|mimes:jpg,jpeg,pdf',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $input['user_id'] = $user_id;
+            $input['title'] = $request->title;
+          
+            $doc = $request->document;
+            $folderPath = public_path().'/user_document';
+            if (!is_dir($folderPath)) {
+                mkdir($folderPath, 0777, true);
+            }
+            $extension  = $doc->getClientOriginalExtension();
+            $filename = 'user_doc_'.$user_id.'_'.random_int(10000, 99999). '.' . $extension;
+            $doc->move(public_path('user_document'), $filename);
+
+            $input['doc_name'] = $filename;
+
+            UserDocument::create($input);
+
+            return $this->success([],'Document added successfully');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // DOCUMENT UPDATE
+
+    public function updateDocument(Request $request){
+        try{
+            $input            = $request->all();
+            $user_id          = Auth::user()->id;
+            $validateData = Validator::make($input, [
+                'id'         => 'required',
+                'title'      => 'required|unique:user_documents,title,'.$request->id.',id,user_id,' . auth()->id(),
+                'document'   => 'sometimes|mimes:jpg,jpeg,pdf',
+            ]);
+            
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $document_details = UserDocument::where('id',$request->id)->first();
+            if(!empty($document_details)){
+               
+                $input['user_id'] = $user_id;
+                $input['title'] = $request->title;
+              
+                if(isset($request->document)){
+                    $filePath = public_path().'/user_document/'.$document_details->doc_name;
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+
+                    $doc = $request->document;
+                    $folderPath = public_path().'/user_document';
+                    if (!is_dir($folderPath)) {
+                        mkdir($folderPath, 0777, true);
+                    }
+                    $extension  = $doc->getClientOriginalExtension();
+                    $filename = 'user_doc_'.$user_id.'_'.random_int(10000, 99999). '.' . $extension;
+                    $doc->move(public_path('user_document'), $filename);
+        
+                    $input['doc_name'] = $filename;
+                }
+
+                $document_details = $document_details->update($input);
+                return $this->success([],'Document updated successfully');
+            }
+            return $this->error('Document not found','Document not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // USER DETAILS
 
     public function getUserProfile()
     {
