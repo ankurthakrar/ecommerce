@@ -13,6 +13,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Tag;
+use App\Models\UserDocument;
 use Validator;
 
 class AdminController extends BaseController
@@ -793,6 +794,45 @@ class AdminController extends BaseController
                 return $this->success([],'Order updated successfully');
             }
             return $this->error('Order not found','Order not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    //  DOCUMENT LIST
+
+    public function getDocumentList(Request $request,$user_id)
+    {
+        try{
+            $document_list         = UserDocument::where('user_id',$user_id)->latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+
+            $data['document_list'] =  $document_list->values();
+            $data['current_page']  =  $document_list->currentPage();
+            $data['per_page']      =  $document_list->perPage();
+            $data['total']         =  $document_list->total();
+            $data['last_page']     =  $document_list->lastPage();
+
+            return $this->success($data,'Document list');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // DOCUMENT DETAILS
+
+    public function getDocmentDetails(Request $request,$id)
+    {
+        try{
+            if ($id < 1) {
+                return $this->error('Please select valid document','Please select valid document');
+            } 
+            $data['document_details'] = UserDocument::where('id',$id)->first();
+            if(!empty($data['document_details'])){
+                return $this->success($data,'Document details');
+            }
+            return $this->error('Document not found','Document not found');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }

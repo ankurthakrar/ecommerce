@@ -79,6 +79,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('slider-image-update', [AdminController::class,'sliderImageUpdate'])->name('slider-image-update');
     Route::get('slider-image-delete/{id}', [AdminController::class, 'sliderImageDelete'])->name('slider-image-delete');
 
+    // DOCUMENT LIST
+
+    Route::get('get-document-list/{id}', [AdminController::class, 'getDocumentList'])->name('get-document-list');
+    Route::get('get-document-detail/{id}', [AdminController::class, 'getDocmentDetails'])->name('get-order-details');
+
     // USER ROUTE
     
     // Cart
