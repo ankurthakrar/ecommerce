@@ -84,6 +84,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('get-document-list/{id}', [AdminController::class, 'getDocumentList'])->name('get-document-list');
     Route::get('get-document-detail/{id}', [AdminController::class, 'getDocmentDetails'])->name('get-order-details');
 
+    // USER LIST
+
+    Route::get('get-user-list', [AdminController::class, 'getUserList'])->name('get-user-list');
+
     // USER ROUTE
     
     // Cart

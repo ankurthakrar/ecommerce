@@ -13,6 +13,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Tag;
+use App\Models\User;
 use App\Models\UserDocument;
 use Validator;
 
@@ -981,6 +982,26 @@ class AdminController extends BaseController
                 return $this->success([],'Image delete successfully');
             }
             return $this->error('Image not found','Image not found');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // USER LIST
+
+    public function getUserList(Request $request)
+    {
+        try{
+            $user_list = User::latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+
+            $data['user_list']     =  $user_list->values();
+            $data['current_page']  =  $user_list->currentPage();
+            $data['per_page']      =  $user_list->perPage();
+            $data['total']         =  $user_list->total();
+            $data['last_page']     =  $user_list->lastPage();
+
+            return $this->success($data,'User list');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }
