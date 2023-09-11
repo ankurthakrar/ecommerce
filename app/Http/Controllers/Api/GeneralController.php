@@ -12,7 +12,7 @@ use App\Models\Product;
 use App\Models\State;
 use App\Models\Tag;
 use Validator;
-
+use DB;
 class GeneralController extends BaseController
 {
     //
@@ -120,25 +120,108 @@ class GeneralController extends BaseController
 
             $sorting = $request->input('sort_by', 'new'); 
 
-            $query = Product::select('id', 'title', 'is_active',
-                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT id FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE 0 END AS varient_id'),
-                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS final_price'),
-                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT after_discount_amount FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE after_discount_amount END AS after_discount_amount'),
-                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT original_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE original_price END AS original_price'),
-                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT tax FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE tax END AS tax'),
-                        \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT discount FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE discount END AS discount'),'tags', 'brand'
-                    );
-
-            if ($sorting == 'popularity') {
-                // Pending
-            } elseif ($sorting == 'price_low_to_high') {
-                $query->orderByRaw("CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2)) ASC");
-            } elseif ($sorting == 'price_high_to_low') {
-                $query->orderByRaw("CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2)) DESC");
-            } else {
-                $query->orderBy('created_at', 'desc');
+            if (isset($request->min_budget) && isset($request->max_budget)) {
+                $query = Product::select('id', 'title', 'is_active', 'tags', 'brand');
+                $bindings = [$request->min_budget, $request->max_budget]; 
+                $query->addSelect([
+                    \DB::raw('CASE WHEN products.is_varient = 1 THEN 
+                        (SELECT id FROM product_variants 
+                        WHERE product_id = products.id 
+                        AND is_active = 1 
+                        AND CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ? 
+                        ORDER BY id LIMIT 1) 
+                        ELSE 0 
+                        END AS varient_id'),
+                ]);
+                $query->addSelect([
+                    \DB::raw('CASE WHEN products.is_varient = 1 THEN 
+                        (SELECT final_price FROM product_variants 
+                        WHERE product_id = products.id 
+                        AND is_active = 1 
+                        AND CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ? 
+                        ORDER BY id LIMIT 1) 
+                        ELSE final_price 
+                        END AS final_price'), 
+                ]); 
+                $query->addSelect([
+                    \DB::raw('CASE WHEN products.is_varient = 1 THEN 
+                        (SELECT after_discount_amount FROM product_variants 
+                        WHERE product_id = products.id 
+                        AND is_active = 1 
+                        AND CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ? 
+                        ORDER BY id LIMIT 1) 
+                        ELSE after_discount_amount 
+                        END AS after_discount_amount'), 
+                ]); 
+                $query->addSelect([
+                    \DB::raw('CASE WHEN products.is_varient = 1 THEN 
+                        (SELECT original_price FROM product_variants 
+                        WHERE product_id = products.id 
+                        AND is_active = 1 
+                        AND CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ? 
+                        ORDER BY id LIMIT 1) 
+                        ELSE original_price 
+                        END AS original_price'), 
+                ]); 
+                $query->addSelect([
+                    \DB::raw('CASE WHEN products.is_varient = 1 THEN 
+                        (SELECT tax FROM product_variants 
+                        WHERE product_id = products.id 
+                        AND is_active = 1 
+                        AND CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ? 
+                        ORDER BY id LIMIT 1) 
+                        ELSE tax 
+                        END AS tax'), 
+                ]); 
+                $query->addSelect([
+                    \DB::raw('CASE WHEN products.is_varient = 1 THEN 
+                        (SELECT discount FROM product_variants 
+                        WHERE product_id = products.id 
+                        AND is_active = 1 
+                        AND CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ? 
+                        ORDER BY id LIMIT 1) 
+                        ELSE discount 
+                        END AS discount'), 
+                ]);
+                
+                $query->addBinding([$request->min_budget, $request->max_budget], 'select');
+                $query->addBinding([$request->min_budget, $request->max_budget], 'select');
+                $query->addBinding([$request->min_budget, $request->max_budget], 'select');
+                $query->addBinding([$request->min_budget, $request->max_budget], 'select');
+                $query->addBinding([$request->min_budget, $request->max_budget], 'select');
+                $query->addBinding([$request->min_budget, $request->max_budget], 'select');
+                
+                if ($sorting == 'popularity') {
+                    // Pending
+                } elseif ($sorting == 'price_low_to_high') {
+                   $query->orderByRaw("CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 AND CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ? ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2)) ASC", [$request->min_budget, $request->max_budget]);
+                } elseif ($sorting == 'price_high_to_low') {
+                     $query->orderByRaw("CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 AND CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ? ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2)) DESC", [$request->min_budget, $request->max_budget]);
+                } else {
+                    $query->orderBy('created_at', 'desc');
+                }
+               
+            }else{
+                $query = Product::select('id', 'title', 'is_active',
+                            \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT id FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE 0 END AS varient_id'),
+                            \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS final_price'),
+                            \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT after_discount_amount FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE after_discount_amount END AS after_discount_amount'),
+                            \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT original_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE original_price END AS original_price'),
+                            \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT tax FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE tax END AS tax'),
+                            \DB::raw('CASE WHEN products.is_varient = 1 THEN (SELECT discount FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE discount END AS discount'),'tags', 'brand'
+                        );
+    
+                if ($sorting == 'popularity') {
+                    // Pending
+                } elseif ($sorting == 'price_low_to_high') {
+                    $query->orderByRaw("CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2)) ASC");
+                } elseif ($sorting == 'price_high_to_low') {
+                    $query->orderByRaw("CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2)) DESC");
+                } else {
+                    $query->orderBy('created_at', 'desc');
+                }
             }
-
+            
             if (isset($request->categories_id)) {
                 $categoryIdArray = $request->categories_id;
                 $query->where(function ($q) use ($categoryIdArray) {
@@ -172,15 +255,14 @@ class GeneralController extends BaseController
                 $query->where('title','LIKE','%'.$search_title.'%');
             }
 
-            if (isset($request->min_budget) && isset($request->max_budget)) {
-                $query->where(function ($q) use ($request) {
-                    $q->whereBetween(\DB::raw('CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2))'), [$request->min_budget, $request->max_budget]);
-                });
-            }
+            // if (isset($request->min_budget) && isset($request->max_budget)) {
+            //     $query->where(function ($q) use ($request) {
+            //         $q->whereBetween(\DB::raw('CAST(CASE WHEN products.is_varient = 1 THEN (SELECT final_price FROM product_variants WHERE product_id = products.id AND is_active = 1 ORDER BY id LIMIT 1) ELSE final_price END AS DECIMAL(10, 2))'), [$request->min_budget, $request->max_budget]);
+            //     });
+            // }
 
             $product_list = $query->where('is_active',1)->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
 
-            // Assuming you have fetched the paginated product list already
             foreach ($product_list as $product) {
                 if ($product->varient_id > 0) {
                     $variantImage = Image::where('type_id', $product->varient_id)->where('type', 'product_variant_image')->orderBy('id')->value('file_name');
