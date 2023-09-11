@@ -509,14 +509,28 @@ class AdminController extends BaseController
     public function productUpdate(Request $request)
     {
         try{
-            $validateData = Validator::make($request->all(), [
+            // $validateData = Validator::make($request->all(), [
+            //     'title'       => 'required|string|max:255|unique:products,title,'.$request->product_id,
+            //     'product_id'  => 'required',
+            //     'category_id' => 'required',
+            //     // 'final_price' => 'required',
+            //     // 'brand'       => 'required',
+            //     'sku'         => 'sometimes|nullable|unique:products,sku,'.$request->product_id,
+            // ]);
+            
+            $rules = [
                 'title'       => 'required|string|max:255|unique:products,title,'.$request->product_id,
                 'product_id'  => 'required',
                 'category_id' => 'required',
                 // 'final_price' => 'required',
                 // 'brand'       => 'required',
-                'sku'         => 'sometimes|unique:products,sku,'.$request->product_id,
-            ]);
+            ];  
+            
+            if (isset($request->sku) && $request->sku != 'null') {
+                $rules['sku'] = 'sometimes|unique:products,sku,'.$request->product_id;
+            }
+
+            $validateData = Validator::make($request->all(), $rules);
 
             if ($validateData->fails()) {
                 return $this->error($validateData->errors(),'Validation error',422);
