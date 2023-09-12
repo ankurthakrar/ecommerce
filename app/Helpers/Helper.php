@@ -59,4 +59,35 @@ class Helper
         }
         return true;
     }
+
+    public static function sendOTP($message,$key){
+        $apiKey       = urlencode(config('app.txt_lcl_api'));
+        $senderID     = urlencode(config('app.txt_lcl_sender')); 
+        // $apiKey       = urlencode('NDE2NDYzNDM3YTc1NTY3MTU1NjU3NDY5MzAzMDczMzI=');
+        // $senderID     = urlencode('HBSEPL'); 
+
+        // API URL
+        $url = "https://api.textlocal.in/send";
+
+        // Prepare the data for the API request
+        $data = [
+            'apikey' => $apiKey,
+            'sender' => $senderID,
+            'message' => $message,
+            'numbers' => $key,
+        ];
+
+        // Make the API request using cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        // Process the API response
+        return $responseData = json_decode($response, true);
+    }
 }

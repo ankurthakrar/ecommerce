@@ -652,6 +652,10 @@ class CustomerController extends BaseController
                 $cartItem         = Cart::where('user_id', $user_id)->delete();
 
                 if(($input['payment_method'] == 'online' && $input['payment_status'] == 'approved') || ($input['payment_method'] == 'cod' && $input['payment_status'] == 'pending')){
+                    $messageTemplate = "Dear Customer, thank you for shopping with Hub Sports! Your order # {{orderNumber}} has been received. We'll notify you once it ships.";
+                    $orderNumber  = $order_data['order_id']; 
+                    $message      = str_replace('{{orderNumber}}', $orderNumber, $messageTemplate);
+                    $responseData = Helper::sendOTP($message,Auth::user()->phone_no);
                     // $key = Auth::user()->email;
                     // $input1['subject']          =  "Order place successfully";
                     // $input1['order_id']         =  $order_data['id'];
@@ -780,30 +784,44 @@ class CustomerController extends BaseController
             $input            = $request->all();
             $user_id          = Auth::user()->id;
 
+            $atLeastOneDocumentProvided = collect($input['document'])->filter(function ($document) {
+                return !empty($document['document']);
+            })->count() > 0;
+
+            if(!$atLeastOneDocumentProvided){
+                $atleast = 'At least one document is required when any document file is provided.';
+                return $this->error($atleast, 'Validation error', 422);
+            }
+
             $validateData = Validator::make($input, [
-                'title'      => 'required|unique:user_documents,title,NULL,id,user_id,' . auth()->id(), 
-                'document'   => 'required|mimes:jpg,jpeg,pdf',
+                'document.*.title'      => 'required', 
+                'document.*.document'   => 'mimes:jpg,jpeg,pdf',
             ]);
 
             if ($validateData->fails()) {
                 return $this->error($validateData->errors(),'Validation error',422);
             }
 
-            $input['user_id'] = $user_id;
-            $input['title'] = $request->title;
-          
-            $doc = $request->document;
-            $folderPath = public_path().'/user_document';
-            if (!is_dir($folderPath)) {
-                mkdir($folderPath, 0777, true);
+            $data['user_id'] = $user_id;
+            foreach($input['document'] as $inputt){
+                $data['title'] = $inputt['title'];
+                $doc = $inputt['document'] ?? null;
+                $filename = "";
+
+                if(!empty($doc)){
+                    $folderPath = public_path().'/user_document';
+                    if (!is_dir($folderPath)) {
+                        mkdir($folderPath, 0777, true);
+                    }
+                    $extension  = $doc->getClientOriginalExtension();
+                    $filename = 'user_doc_'.$user_id.'_'.random_int(10000, 99999). '.' . $extension;
+                    $doc->move(public_path('user_document'), $filename);
+                }
+    
+                $data['doc_name'] = $filename;
+    
+                UserDocument::create($data);
             }
-            $extension  = $doc->getClientOriginalExtension();
-            $filename = 'user_doc_'.$user_id.'_'.random_int(10000, 99999). '.' . $extension;
-            $doc->move(public_path('user_document'), $filename);
-
-            $input['doc_name'] = $filename;
-
-            UserDocument::create($input);
 
             return $this->success([],'Document added successfully');
         }catch(Exception $e){
@@ -820,7 +838,7 @@ class CustomerController extends BaseController
             $user_id          = Auth::user()->id;
             $validateData = Validator::make($input, [
                 'id'         => 'required',
-                'title'      => 'required|unique:user_documents,title,'.$request->id.',id,user_id,' . auth()->id(),
+                'title'      => 'required',
                 'document'   => 'sometimes|mimes:jpg,jpeg,pdf',
             ]);
             
@@ -832,14 +850,15 @@ class CustomerController extends BaseController
             if(!empty($document_details)){
                
                 $input['user_id'] = $user_id;
-                $input['title'] = $request->title;
-              
-                if(isset($request->document)){
+                $input['doc_name'] = "";
+
+                if($document_details->doc_name != ''){
                     $filePath = public_path().'/user_document/'.$document_details->doc_name;
                     if (file_exists($filePath)) {
                         unlink($filePath);
                     }
-
+                }
+                if(isset($request->document)){
                     $doc = $request->document;
                     $folderPath = public_path().'/user_document';
                     if (!is_dir($folderPath)) {

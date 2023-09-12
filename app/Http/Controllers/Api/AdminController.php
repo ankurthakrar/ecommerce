@@ -15,6 +15,7 @@ use App\Models\ProductVariant;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\UserDocument;
+use App\Helpers\Helper;
 use Validator;
 
 class AdminController extends BaseController
@@ -806,6 +807,18 @@ class AdminController extends BaseController
                 $order_details->order_status    = $input['order_status'] ?? $order_details['order_status'];
                 $order_details->payment_status  = $input['payment_status'] ?? $order_details['payment_status'];
                 $order_details->save();
+
+                if(isset($input['order_status']) &&  $input['order_status'] == 'shipped'){
+                    $messageTemplate = "Dear Customer, Your order # {{orderNumber}} has been shipped and is on its way. - Hub Sports Equipment Pvt. Ltd.";
+                    $orderNumber  = $order_details['order_id']; 
+                    $message      = str_replace('{{orderNumber}}', $orderNumber, $messageTemplate);
+
+                    $user_data = User::where('id',$order_details['user_id'])->first();
+                    if(isset($user_data->phone_no)){
+                        $responseData = Helper::sendOTP($message,$user_data->phone_no);
+                    }
+                }
+
                 return $this->success([],'Order updated successfully');
             }
             return $this->error('Order not found','Order not found');
