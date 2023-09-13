@@ -795,7 +795,7 @@ class CustomerController extends BaseController
 
             $validateData = Validator::make($input, [
                 'document.*.title'      => 'required', 
-                'document.*.document'   => 'mimes:jpg,jpeg,pdf',
+                'document.*.document'   => 'sometimes|mimes:jpg,jpeg,pdf',
             ]);
 
             if ($validateData->fails()) {
