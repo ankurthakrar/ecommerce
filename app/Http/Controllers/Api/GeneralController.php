@@ -184,6 +184,16 @@ class GeneralController extends BaseController
                         END AS discount'), 
                 ]);
                 
+                $query->where(function ($query) use ($request) {
+                    $query->orWhere(function ($query) use ($request) {
+                        $query->where('products.is_varient', 1)
+                              ->whereRaw('CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ?', [$request->min_budget, $request->max_budget]);
+                    })->orWhere(function ($query) use ($request) {
+                        $query->where('products.is_varient', '!=', 1)
+                              ->whereRaw('CAST(final_price AS DECIMAL(10, 2)) BETWEEN ? AND ?', [$request->min_budget, $request->max_budget]);
+                    });
+                });
+
                 $query->addBinding([$request->min_budget, $request->max_budget], 'select');
                 $query->addBinding([$request->min_budget, $request->max_budget], 'select');
                 $query->addBinding([$request->min_budget, $request->max_budget], 'select');
