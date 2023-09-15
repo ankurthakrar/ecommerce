@@ -8,6 +8,7 @@ use App\Mail\ResetPasswordEmail;
 use App\Mail\WelcomeEmailAdmin;
 use App\Mail\WelcomeEmailUser;
 use App\Mail\OrderInvoiceToUser;
+use App\Mail\ShippingOrderToUser;
 
 class Helper
 {
@@ -56,6 +57,12 @@ class Helper
 
         elseif (isset($data['order_invoice_to_user'])) { 
             Mail::to($data['email'])->send(new OrderInvoiceToUser($data['order']));
+        }
+       
+        // For shipping to user
+
+        elseif (isset($data['shipping_order_to_user'])) { 
+            Mail::to($data['email'])->send(new ShippingOrderToUser($data['order'],$data['order_item']));
         }
         return true;
     }

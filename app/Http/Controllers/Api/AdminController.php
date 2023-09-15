@@ -16,6 +16,8 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Models\UserDocument;
 use App\Helpers\Helper;
+use App\Models\City;
+use App\Models\State;
 use Validator;
 
 class AdminController extends BaseController
@@ -817,6 +819,22 @@ class AdminController extends BaseController
                     if(isset($user_data->phone_no)){
                         $responseData = Helper::sendOTP($message,$user_data->phone_no);
                     }
+
+                    $state_name = State::where('id',$order_details->state_id)->first();
+                    $city_name = City::where('id',$order_details->city_id)->first();
+                    $order_details['original_full_name'] = $user_data->first_name.' '.$user_data->last_name;
+                    $order_details['city'] = $city_name->name ;
+                    $order_details['state'] = $state_name->name;
+                    
+                    $orderItem = OrderItem::where('id',$request->order_id)->first();
+
+                    $email_data   = [
+                        'email'                  => $user_data->email,
+                        'shipping_order_to_user' => 'shipping_order_to_user',
+                        'order'                  => $order_details,
+                        'order_item'             => $orderItem,
+                    ];
+                    Helper::sendMail('emails.shipping', $email_data, $user_data->email, '');
                 }
 
                 return $this->success([],'Order updated successfully');

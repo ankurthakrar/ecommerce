@@ -651,11 +651,13 @@ class CustomerController extends BaseController
                 OrderItem::insert($orderItemsData);
                 $cartItem         = Cart::where('user_id', $user_id)->delete();
 
+                $data['order_id']  =  $order_data['id'];
+                $data['is_send_mail']  = 0;
+
                 if(($input['payment_method'] == 'online' && $input['payment_status'] == 'approved') || ($input['payment_method'] == 'cod' && $input['payment_status'] == 'pending')){
-                    $messageTemplate = "Dear Customer, thank you for shopping with Hub Sports! Your order # {{orderNumber}} has been received. We'll notify you once it ships.";
-                    $orderNumber  = $order_data['order_id']; 
-                    $message      = str_replace('{{orderNumber}}', $orderNumber, $messageTemplate);
-                    $responseData = Helper::sendOTP($message,Auth::user()->phone_no);
+                    
+                    $data['is_send_mail']  = 1;
+
                     // $key = Auth::user()->email;
                     // $input1['subject']          =  "Order place successfully";
                     // $input1['order_id']         =  $order_data['id'];
@@ -686,9 +688,36 @@ class CustomerController extends BaseController
                     // ];
                     // Helper::sendMail('emails.order_invoice_to_user', $email_data, $key, '');
                 }
-                return $this->success([],'Order successfully');
+                return $this->success($data,'Order successfully');
             }
             return $this->error('Something went wrong','Something went wrong');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // ORDER MAIL AND SMS SEND
+
+    public function orderMailSMS(Request $request){
+        try{
+            $user_id          = Auth::user()->id;
+
+            $validateData = Validator::make($request->all(), [
+                'order_id'      => 'required',  
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            $order_data = Order::with('orderItems')->where('id',$request->order_id)->where('user_id',$user_id)->first();
+            $messageTemplate = "Dear Customer, thank you for shopping with Hub Sports! Your order # {{orderNumber}} has been received. We'll notify you once it ships.";
+            $orderNumber  = $order_data['order_id']; 
+            $message      = str_replace('{{orderNumber}}', $orderNumber, $messageTemplate);
+            $responseData = Helper::sendOTP($message,Auth::user()->phone_no);
+
+            return $this->success([],'Sent successfully');
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }

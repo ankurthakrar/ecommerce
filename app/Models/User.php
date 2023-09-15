@@ -53,4 +53,15 @@ class User extends Authenticatable
         'otp_verified'=> 'int',
         'email_verified_at' => 'datetime',
     ];
+
+    
+    protected $appends = ['user_id_new'];
+
+    public function getUserIdNewAttribute()
+    {
+        if (!empty($this->id)) {
+            return "HSEPL".$this->id;
+        }
+        return null;
+    }
 }
