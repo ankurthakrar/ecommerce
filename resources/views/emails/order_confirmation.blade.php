@@ -155,7 +155,7 @@
                                                                 <tr>
                                                                     <td style="padding-right: 0px;padding-left: 0px;" align="center">
 
-                                                                        <img align="center" border="0" src="{{url('')}}/images/hub-image.png" alt="" title="" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 70px;" width="70" />
+                                                                        <img align="center" border="0" src="{{url('')}}/public/images/hub-image.png" alt="" title="" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 70px;" width="70" />
 
                                                                     </td>
                                                                 </tr>
