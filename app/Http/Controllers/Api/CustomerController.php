@@ -523,14 +523,14 @@ class CustomerController extends BaseController
     public function placeOrder(Request $request){
         try{
             $input                = $request->all();
-            $validateData = Validator::make($input, [
-                // 'order'              => 'required|array',
-                // 'order.*.product_id' => 'required',
-                // 'order.*.qty'        => 'required',
-                'order_status'      => 'required',
-                'payment_method'    => 'required',
-                'payment_status'    => 'required',
-                'address_id'        => 'required',
+            $validateData = Validator::make($input, [ 
+                'order_status'            => 'required',
+                'payment_method'          => 'required',
+                'payment_status'          => 'required',
+                'address_id'              => 'required',
+                'cart'                    => 'required|array',
+                'cart.*.id'               => 'required',
+                'cart.*.final_item_price' => 'required',
             ]);
 
             if ($validateData->fails()) {
@@ -540,6 +540,10 @@ class CustomerController extends BaseController
             $user_id              = Auth::id();
             $input['user_id']     = $user_id;
 
+            foreach ($request->cart as $cartData) {
+                Cart::where('id', $cartData['id'])->update(['final_item_price' => $cartData['final_item_price']]);
+            }
+            
             $input['order']          = Cart::where('user_id', $user_id)->get();
            
             $user_address = UserAddress::where('id',$input['address_id'])->first();
@@ -637,6 +641,7 @@ class CustomerController extends BaseController
                         'description'           =>  $product['description'],
                         'description1'          =>  $product['description1'],
                         'description2'          =>  $product['description2'],
+                        'final_item_price'      =>  $item['final_item_price'],
                         'created_at'            =>  now(),
                         'updated_at'            =>  now(),
                     ];
@@ -655,38 +660,7 @@ class CustomerController extends BaseController
                 $data['is_send_mail']  = 0;
 
                 if(($input['payment_method'] == 'online' && $input['payment_status'] == 'approved') || ($input['payment_method'] == 'cod' && $input['payment_status'] == 'pending')){
-                    
                     $data['is_send_mail']  = 1;
-
-                    // $key = Auth::user()->email;
-                    // $input1['subject']          =  "Order place successfully";
-                    // $input1['order_id']         =  $order_data['id'];
-                    // $input1['created_at']       =  $order_data['created_at'];
-                    // $input1['first_name']       =  Auth::user()->first_name;
-                    // $input1['last_name']        =  Auth::user()->last_name;
-                    // $input1['full_name']        =  $order_data['full_name'],
-                    // $input1['email']            =  $order_data['email'],
-                    // $input1['phone_no']         =  $order_data['phone_no'],
-                    // $input1['address_line_1']   =  $order_data['address_line_1'];
-                    // $input1['address_line_2']   =  $order_data['address_line_2'];
-                    // $input1['city']             =  City::where('id',$order_data['city_id'])->first()->value('name'); 
-                    // $input1['state_name']       =  State::where('id',$order_data['state_id'])->first()->value('name');
-                    // $input1['zipcode']          =  $order_data['pincode'];
-                    // $input1['payment_method']   =  $order_data['payment_method'];
-                    // $input1['total_amount']     =  $order_data['total_amount'];
-                    // $input1['order_items']      =  array_map(function ($element) {
-                    //                                     return [
-                    //                                         "title" => $element["title"],
-                    //                                         "qty" => $element["qty"],
-                    //                                         "final_price" => $element["final_price"],
-                    //                                     ];
-                    //                                 }, $orderItemsData);
-                    // $email_data   = [
-                    //     'email'                 => $key,
-                    //     'order_invoice_to_user' => 'order_invoice_to_user',
-                    //     'order'                 => $input1,
-                    // ];
-                    // Helper::sendMail('emails.order_invoice_to_user', $email_data, $key, '');
                 }
                 return $this->success($data,'Order successfully');
             }
@@ -711,11 +685,24 @@ class CustomerController extends BaseController
                 return $this->error($validateData->errors(),'Validation error',422);
             }
 
-            $order_data = Order::with('orderItems')->where('id',$request->order_id)->where('user_id',$user_id)->first();
+            $order_data = Order::with('orderItems','user')->where('id',$request->order_id)->where('user_id',$user_id)->first();
+            $order_data['original_full_name'] = Auth::user()->first_name.' '.Auth::user()->last_name;
+            $state_name = State::where('id',$order_data->state_id)->first();
+            $city_name = City::where('id',$order_data->city_id)->first(); 
+            $order_data['city'] = $city_name->name ;
+            $order_data['state'] = $state_name->name;
+
             $messageTemplate = "Dear Customer, thank you for shopping with Hub Sports! Your order # {{orderNumber}} has been received. We'll notify you once it ships.";
             $orderNumber  = $order_data['order_id']; 
             $message      = str_replace('{{orderNumber}}', $orderNumber, $messageTemplate);
             $responseData = Helper::sendOTP($message,Auth::user()->phone_no);
+ 
+            $email_data   = [
+                'email'                 => Auth::user()->email,
+                'order_confirmation'    => 'order_confirmation',
+                'order'                 => $order_data,
+            ]; 
+            Helper::sendMail('emails.order_confirmation', $email_data, Auth::user()->email, '');
 
             return $this->success([],'Sent successfully');
         }catch(Exception $e){

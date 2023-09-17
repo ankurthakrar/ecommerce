@@ -7,6 +7,8 @@ use App\Mail\EmailVerificationMail;
 use App\Mail\ResetPasswordEmail;
 use App\Mail\WelcomeEmailAdmin;
 use App\Mail\WelcomeEmailUser;
+use App\Mail\OrderConfirmation;
+use App\Mail\OrderConfirmationAdmin;
 use App\Mail\OrderInvoiceToUser;
 use App\Mail\ShippingOrderToUser;
 
@@ -55,14 +57,21 @@ class Helper
        
         // For order place to user
 
-        elseif (isset($data['order_invoice_to_user'])) { 
-            Mail::to($data['email'])->send(new OrderInvoiceToUser($data['order']));
+        elseif (isset($data['order_confirmation'])) { 
+            $admin_email = env('ADMIN_EMAIL') ?? 'admin@gmail.com';
+            Mail::to($data['email'])->send(new OrderConfirmation($data['order']));
+            Mail::to($admin_email)->send(new OrderConfirmationAdmin($data['order']));
         }
        
         // For shipping to user
 
         elseif (isset($data['shipping_order_to_user'])) { 
-            Mail::to($data['email'])->send(new ShippingOrderToUser($data['order'],$data['order_item']));
+            Mail::to($data['email'])->send(new ShippingOrderToUser($data['order']));
+        }
+
+        // For order delivered
+        elseif (isset($data['order_invoice'])) { 
+            Mail::to($data['email'])->send(new OrderInvoiceToUser($data['order']));
         }
         return true;
     }

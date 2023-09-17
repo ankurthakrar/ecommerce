@@ -198,4 +198,5 @@ return [
     'app_name'  => env('APP_NAME','ecommerce'),
     'txt_lcl_api' => env('TEXT_LOCAL_API','NDE2NDYzNDM3YTc1NTY3MTU1NjU3NDY5MzAzMDczMzI='),
     'txt_lcl_sender' => env('TEXT_LOCAL_SENDER_ID','HBSEPL'),
+    'admin_order_url'  => env('ADMIN_ORDER_URL','https://hub.asesadigital.com/admin-order/'),
 ];

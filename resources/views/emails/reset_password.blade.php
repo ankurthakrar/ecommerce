@@ -348,7 +348,7 @@
               <tr>
                 <td class="wrapper">
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                    <tr><td align="center"><a style="text-decoration:none;" href="{{url('')}}"><img style="max-width: 90px; width: 100%; margin: 0px 0px 30px 0px;" src="{{url('')}}/images/ecommerce.jpg"></a></td></tr>
+                    <tr><td align="center"><a style="text-decoration:none;" href="{{url('')}}"><img style="max-width: 90px; width: 100%; margin: 0px 0px 30px 0px;" src="{{url('')}}/images/hub-image.png"></a></td></tr>
                     <tr>
                       <td>
                         <p><b style="font-size:16px;">Your reset password link is: {{$reset_link}}</b></p>

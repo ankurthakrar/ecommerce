@@ -351,8 +351,10 @@
                     <tr><td align="center"><a style="text-decoration:none;" href="{{url('')}}"><img style="max-width: 90px; width: 100%; margin: 0px 0px 30px 0px;" src="{{url('')}}/images/hub-image.png"></a></td></tr>
                     <tr>
                       <td>
-                        <p><b style="font-size:16px;">Hello , admin</b></p>
-                        <p> A new user with name {{$user['first_name']}} is registered at {{ config('app.app_name')}}</p>
+                        <p><b style="font-size:16px;">Hello , admin</b></p> 
+                        <p> You have new order from {{$order->user->first_name}} {{$order->user->last_name}}</p>
+                        <p> You can see by clicking this</p>
+                        <p> <a href="{{ config('app.admin_order_url') . $order->id }}">{{ config('app.admin_order_url') . $order->id }}</a></p>
                         <p><b>Thanks!</b></p>
                         <!-- <p><b>Thanks!</b><br>Meet Now Team</p> -->
                         

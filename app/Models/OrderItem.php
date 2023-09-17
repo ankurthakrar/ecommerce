@@ -41,5 +41,6 @@ class OrderItem extends Model
         'description',
         'description1',
         'description2',
+        'final_item_price'
     ];
 }

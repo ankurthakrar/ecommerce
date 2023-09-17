@@ -14,7 +14,8 @@ class Cart extends Model
         'product_id',
         'product_variation_id',
         'qty',
-        'is_booking_price'
+        'is_booking_price',
+        'final_item_price'
     ];
 
     public function getCartImageUrlAttribute()

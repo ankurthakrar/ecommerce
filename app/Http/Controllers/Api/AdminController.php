@@ -798,45 +798,47 @@ class AdminController extends BaseController
             $validateData = Validator::make($request->all(), [
                 'order_id'     => 'required',
             ]);
-
+            
             if ($validateData->fails()) {
                 return $this->error($validateData->errors(),'Validation error',422);
             } 
-
-            $order_details = Order::where('id',$request->order_id)->first();
+            
+            $order_details = Order::with('orderItems')->where('id',$request->order_id)->first();
             if(!empty($order_details)){
                 $input = $request->all();
                 $order_details->order_status    = $input['order_status'] ?? $order_details['order_status'];
                 $order_details->payment_status  = $input['payment_status'] ?? $order_details['payment_status'];
                 $order_details->save();
+                
+                $user_data = User::where('id',$order_details['user_id'])->first();
 
                 if(isset($input['order_status']) &&  $input['order_status'] == 'shipped'){
                     $messageTemplate = "Dear Customer, Your order # {{orderNumber}} has been shipped and is on its way. - Hub Sports Equipment Pvt. Ltd.";
                     $orderNumber  = $order_details['order_id']; 
                     $message      = str_replace('{{orderNumber}}', $orderNumber, $messageTemplate);
 
-                    $user_data = User::where('id',$order_details['user_id'])->first();
                     if(isset($user_data->phone_no)){
-                        $responseData = Helper::sendOTP($message,$user_data->phone_no);
+                        // $responseData = Helper::sendOTP($message,$user_data->phone_no);
                     }
 
-                    $state_name = State::where('id',$order_details->state_id)->first();
-                    $city_name = City::where('id',$order_details->city_id)->first();
                     $order_details['original_full_name'] = $user_data->first_name.' '.$user_data->last_name;
-                    $order_details['city'] = $city_name->name ;
-                    $order_details['state'] = $state_name->name;
-                    
-                    $orderItem = OrderItem::where('id',$request->order_id)->first();
 
                     $email_data   = [
                         'email'                  => $user_data->email,
                         'shipping_order_to_user' => 'shipping_order_to_user',
-                        'order'                  => $order_details,
-                        'order_item'             => $orderItem,
+                        'order'                  => $order_details, 
                     ];
                     Helper::sendMail('emails.shipping', $email_data, $user_data->email, '');
                 }
 
+                if(isset($input['order_status']) &&  $input['order_status'] == 'delivered'){
+                    $email_data   = [
+                        'email'                  => $user_data->email,
+                        'order_invoice'          => 'order_invoice',
+                        'order'                  => $order_details,
+                    ];
+                    Helper::sendMail('emails.order_invoice', $email_data, $user_data->email, '');
+                }
                 return $this->success([],'Order updated successfully');
             }
             return $this->error('Order not found','Order not found');

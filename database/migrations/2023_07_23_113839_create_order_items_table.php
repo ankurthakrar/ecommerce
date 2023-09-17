@@ -46,6 +46,7 @@ return new class extends Migration
             $table->longText('description')->nullable();
             $table->longText('description1')->nullable();
             $table->longText('description2')->nullable();
+            $table->string('final_item_price')->nullable();
             $table->timestamps();
         });
     }

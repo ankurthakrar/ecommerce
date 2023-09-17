@@ -44,7 +44,7 @@ class OrderInvoiceToUser extends Mailable
     public function content()
     {
         return new Content(
-            view: 'emails.order-invoice-to-user',
+            view: 'emails.order_invoice_to_user',
             with: ['order' => $this->order],
         );
     }

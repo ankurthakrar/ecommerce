@@ -31,16 +31,16 @@
                 width: 90px !important;
             }
 
-            .u-row .u-col-30p4 {
-                width: 152px !important;
+            .u-row .u-col-26p6 {
+                width: 133px !important;
             }
 
             .u-row .u-col-50 {
                 width: 250px !important;
             }
 
-            .u-row .u-col-69p6 {
-                width: 348px !important;
+            .u-row .u-col-73p4 {
+                width: 367px !important;
             }
 
             .u-row .u-col-82 {
@@ -184,9 +184,8 @@
 
                                                             <div>
                                                                 <div style="text-align:right; font-size:12px; "> Your Orders | Your Account | <a href="https://hubshooting.com"> hubshooting.com </a> </div>
-                                                                <div style="color:black; padding-top:3px; font-size:18px; border-top:1px solid grey; margin-top:3px; text-align:right;"> Shipping Confirmation
-                                                                </div>
-                                                                <div style="text-align:right; font-size:12px; "> Order #{{$order['order_id']}}</div>
+                                                                <div style="color:black; padding-top:3px; font-size:18px; border-top:1px solid grey; margin-top:3px; text-align:right;"> Order Confirmation </div>
+                                                                <div style="text-align:right; font-size:12px; "> Order #{{$order['order_id']}} </div>
                                                             </div>
 
                                                         </td>
@@ -226,8 +225,7 @@
 
                                                             <div>
                                                                 <div style="color:#cc6600; font-size:18px; "> Hello {{$order['original_full_name']}}, </div>
-                                                                <p style="font-size:12px; line-height:14px; "> We thought you'd like to know that we've dispatched your item(s). Your order is on the way.</p>
-
+                                                                <p style="font-size:12px; line-height:16px; "> Thank you for your order. We’ll send a confirmation when your order ships. Your estimated delivery date is indicated below. If you would like to view the status of your order or make any changes to it, please visit Your Orders on hubshooting.com. </p>
                                                             </div>
 
                                                         </td>
@@ -288,8 +286,11 @@
                                                             <div>
                                                                 <div style="font-size:12px; color:#444444;"> Arriving: <div>
                                                                         <div style="font-size:14px; color:green; line-height:14px"> Monday, August 28 <div>
+                                                                                <div style="font-size:12px;  color:#444444; margin-top:10px"> Your shipping speed: <div>
+                                                                                        <div style="margin-top:1px"> <strong> Delivery </strong> </div>
+                                                                                        <div style="margin-top:15px"> View or manage order </div>
 
-                                                                            </div>
+                                                                                    </div>
 
                                                         </td>
                                                     </tr>
@@ -313,10 +314,8 @@
                                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div>
-                                                                <div style="font-size:10px; line-height:12px;"> Your package was sent to:
-                                                                    <br>
-                                                                    <b> {{$order['full_name']}} {{$order['address_line_1']}},{{$order['address_line_2']}},{{$order['city_name']}},{{$order['state_name']}}</b>
-                                                                </div>
+                                                                <div style="font-size:10px; line-height:12px;"> Your order will be sent to: <br>
+                                                                {{$order['original_full_name']}} {{$order['address_line_1']}},{{$order['address_line_2']}},{{$order['city']}},{{$order['state']}} </div>
                                                             </div>
 
                                                         </td>
@@ -357,6 +356,8 @@
                                                             <div>
                                                                 <div style="color:#cc6600; border-bottom:1px solid grey; font-size:18px; line-height:22px "> Order summary
                                                                 </div>
+                                                                <div style="font-size:12px; line-height:11px; margin-top:5px "> Order # {{$order['order_id']}} </div>
+                                                                <div style="font-size:12px; line-height:11px; margin-top:5px "> Placed on {{date('d-m-Y', strtotime($order['created_at']))}} </div>
 
                                                             </div>
 
@@ -378,14 +379,14 @@
 
 
 
-
+                    @foreach($order->orderItems as $items)
                     <div class="u-row-container" style="padding: 0px 15px 0px 14px;background-color: #ffffff">
                         <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
                             <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
                                 <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px 15px 0px 14px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
 
-                                <!--[if (mso)|(IE)]><td align="center" width="152" style="width: 152px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-30p4" style="max-width: 320px;min-width: 152px;display: table-cell;vertical-align: top;">
+                                <!--[if (mso)|(IE)]><td align="center" width="250" style="width: 250px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-50" style="max-width: 320px;min-width: 250px;display: table-cell;vertical-align: top;">
                                     <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
                                         <!--[if (!mso)&(!IE)]><!-->
                                         <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
@@ -396,55 +397,6 @@
                                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div style="font-size: 12px; line-height: 10%; text-align: left; word-wrap: break-word;">
-                                                                <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
-                                                                            <div dir="ltr">
-                                                                                <div dir="ltr">
-                                                                                    <div dir="ltr">
-                                                                                        <div dir="ltr">
-                                                                                            <div dir="ltr">
-                                                                                                <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div>Item Subtotal:</div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <!--[if (!mso)&(!IE)]><!-->
-                                        </div><!--<![endif]-->
-                                    </div>
-                                </div>
-                                <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]><td align="center" width="348" style="width: 348px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-69p6" style="max-width: 320px;min-width: 348px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <!--[if (!mso)&(!IE)]><!-->
-                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
-
-                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-
-                                                            <div style="font-size: 12px; font-weight: 400; line-height: 10%; text-align: left; word-wrap: break-word;">
                                                                 <div dir="ltr">
                                                                     <div>
                                                                         <div dir="ltr" data-smartmail="gmail_signature">
@@ -458,7 +410,58 @@
                                                                                                         <div>
                                                                                                             <div id="m_5389458349362862931gmail-:17f">
                                                                                                                 <div id="m_5389458349362862931gmail-:17g">
-                                                                                                                    <div>Rs.0.00</div>
+                                                                                                                    <div>{{$items->title}}</div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                        </div><!--<![endif]-->
+                                    </div>
+                                </div>
+                                <!--[if (mso)|(IE)]></td><![endif]-->
+                                <!--[if (mso)|(IE)]><td align="center" width="250" style="width: 250px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-50" style="max-width: 320px;min-width: 250px;display: table-cell;vertical-align: top;">
+                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+                                        <!--[if (!mso)&(!IE)]><!-->
+                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+
+                                                            <div style="font-size: 12px; line-height: 10%; text-align: right; word-wrap: break-word;">
+                                                                <div dir="ltr">
+                                                                    <div>
+                                                                        <div dir="ltr" data-smartmail="gmail_signature">
+                                                                            <div dir="ltr">
+                                                                                <div dir="ltr">
+                                                                                    <div dir="ltr">
+                                                                                        <div dir="ltr">
+                                                                                            <div dir="ltr">
+                                                                                                <div dir="ltr">
+                                                                                                    <div dir="ltr">
+                                                                                                        <div>
+                                                                                                            <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                    <div><strong>Rs.{{$items->final_item_price}}</strong></div>
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>
@@ -488,18 +491,15 @@
                             </div>
                         </div>
                     </div>
-
-
-
-
-
-                    <div class="u-row-container" style="padding: 0px 15px 0px 14px;background-color: #ffffff">
+                    @endforeach
+ 
+                    <div class="u-row-container" style="padding: 0px;background-color: #ffffff">
                         <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
                             <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px 15px 0px 14px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
+                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
 
-                                <!--[if (mso)|(IE)]><td align="center" width="152" style="width: 152px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-30p4" style="max-width: 320px;min-width: 152px;display: table-cell;vertical-align: top;">
+                                <!--[if (mso)|(IE)]><td align="center" width="500" style="width: 500px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-100" style="max-width: 320px;min-width: 500px;display: table-cell;vertical-align: top;">
                                     <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
                                         <!--[if (!mso)&(!IE)]><!-->
                                         <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
@@ -507,85 +507,10 @@
                                             <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                                                 <tbody>
                                                     <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:1px 1px 25px;font-family:arial,helvetica,sans-serif;" align="left">
 
-                                                            <div style="font-size: 12px; line-height: 10%; text-align: left; word-wrap: break-word;">
-                                                                <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
-                                                                            <div dir="ltr">
-                                                                                <div dir="ltr">
-                                                                                    <div dir="ltr">
-                                                                                        <div dir="ltr">
-                                                                                            <div dir="ltr">
-                                                                                                <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div dir="ltr">
-                                                                                                                    <div>Shipping &amp; Handling:</div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <!--[if (!mso)&(!IE)]><!-->
-                                        </div><!--<![endif]-->
-                                    </div>
-                                </div>
-                                <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]><td align="center" width="348" style="width: 348px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-69p6" style="max-width: 320px;min-width: 348px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <!--[if (!mso)&(!IE)]><!-->
-                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
-
-                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-
-                                                            <div style="font-size: 12px; font-weight: 400; line-height: 10%; text-align: left; word-wrap: break-word;">
-                                                                <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
-                                                                            <div dir="ltr">
-                                                                                <div dir="ltr">
-                                                                                    <div dir="ltr">
-                                                                                        <div dir="ltr">
-                                                                                            <div dir="ltr">
-                                                                                                <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div>Rs.0.00</div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                            <div>
+                                                                <hr>
                                                             </div>
 
                                                         </td>
@@ -607,13 +532,13 @@
 
 
 
-                    <div class="u-row-container" style="padding: 0px 15px 0px 14px;background-color: #ffffff">
+                    <div class="u-row-container" style="padding: 0px;background-color: #ffffff;display: none;">
                         <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
                             <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px 15px 0px 14px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
+                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
 
-                                <!--[if (mso)|(IE)]><td align="center" width="152" style="width: 152px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-30p4" style="max-width: 320px;min-width: 152px;display: table-cell;vertical-align: top;">
+                                <!--[if (mso)|(IE)]><td align="center" width="367" style="width: 367px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-73p4" style="max-width: 320px;min-width: 367px;display: table-cell;vertical-align: top;">
                                     <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
                                         <!--[if (!mso)&(!IE)]><!-->
                                         <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
@@ -621,25 +546,23 @@
                                             <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                                                 <tbody>
                                                     <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px 0px;font-family:arial,helvetica,sans-serif;" align="left">
 
-                                                            <div style="font-size: 12px; line-height: 10%; text-align: left; word-wrap: break-word;">
+                                                            <div style="font-size: 12px; line-height: 10%; text-align: right; word-wrap: break-word;">
                                                                 <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
+                                                                    <div>
+                                                                        <div dir="ltr" data-smartmail="gmail_signature">
                                                                             <div dir="ltr">
                                                                                 <div dir="ltr">
                                                                                     <div dir="ltr">
                                                                                         <div dir="ltr">
                                                                                             <div dir="ltr">
                                                                                                 <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div dir="ltr">
-                                                                                                                    <div dir="ltr">
-                                                                                                                        <div>POD Convenience Fee:</div>
-                                                                                                                    </div>
+                                                                                                    <div dir="ltr">
+                                                                                                        <div>
+                                                                                                            <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                    <div>Item Name</div>
                                                                                                                 </div>
                                                                                                             </div>
                                                                                                         </div>
@@ -665,8 +588,8 @@
                                     </div>
                                 </div>
                                 <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]><td align="center" width="348" style="width: 348px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-69p6" style="max-width: 320px;min-width: 348px;display: table-cell;vertical-align: top;">
+                                <!--[if (mso)|(IE)]><td align="center" width="133" style="width: 133px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-26p6" style="max-width: 320px;min-width: 133px;display: table-cell;vertical-align: top;">
                                     <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
                                         <!--[if (!mso)&(!IE)]><!-->
                                         <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
@@ -674,9 +597,9 @@
                                             <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                                                 <tbody>
                                                     <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
-                                                            <div style="font-size: 12px; font-weight: 400; line-height: 10%; text-align: left; word-wrap: break-word;">
+                                                            <div style="font-size: 12px; line-height: 10%; text-align: right; word-wrap: break-word;">
                                                                 <div dir="ltr">
                                                                     <div dir="ltr" data-smartmail="gmail_signature">
                                                                         <div dir="ltr">
@@ -689,325 +612,26 @@
                                                                                                     <div id="m_5389458349362862931gmail-:17f">
                                                                                                         <div id="m_5389458349362862931gmail-:17g">
                                                                                                             <div dir="ltr">
-                                                                                                                <div dir="ltr">
-                                                                                                                    <div>Rs.0.00</div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <!--[if (!mso)&(!IE)]><!-->
-                                        </div><!--<![endif]-->
-                                    </div>
-                                </div>
-                                <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-
-                    <div class="u-row-container" style="padding: 0px 15px 0px 14px;background-color: #ffffff">
-                        <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
-                            <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px 15px 0px 14px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
-
-                                <!--[if (mso)|(IE)]><td align="center" width="152" style="width: 152px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-30p4" style="max-width: 320px;min-width: 152px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <!--[if (!mso)&(!IE)]><!-->
-                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
-
-                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-
-                                                            <div style="font-size: 12px; line-height: 10%; text-align: left; word-wrap: break-word;">
-                                                                <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
-                                                                            <div dir="ltr">
-                                                                                <div dir="ltr">
-                                                                                    <div dir="ltr">
-                                                                                        <div dir="ltr">
-                                                                                            <div dir="ltr">
-                                                                                                <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div dir="ltr">
-                                                                                                                    <div dir="ltr">
-                                                                                                                        <div dir="ltr">
-                                                                                                                            <div>FREE Delivery:</div>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <!--[if (!mso)&(!IE)]><!-->
-                                        </div><!--<![endif]-->
-                                    </div>
-                                </div>
-                                <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]><td align="center" width="348" style="width: 348px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-69p6" style="max-width: 320px;min-width: 348px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <!--[if (!mso)&(!IE)]><!-->
-                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
-
-                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-
-                                                            <div style="font-size: 12px; font-weight: 400; line-height: 10%; text-align: left; word-wrap: break-word;">
-                                                                <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
-                                                                            <div dir="ltr">
-                                                                                <div dir="ltr">
-                                                                                    <div dir="ltr">
-                                                                                        <div dir="ltr">
-                                                                                            <div dir="ltr">
-                                                                                                <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div dir="ltr">
-                                                                                                                    <div dir="ltr">
-                                                                                                                        <div>Rs.0.00</div>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <!--[if (!mso)&(!IE)]><!-->
-                                        </div><!--<![endif]-->
-                                    </div>
-                                </div>
-                                <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-
-                    <div class="u-row-container" style="padding: 0px 15px 0px 14px;background-color: #ffffff">
-                        <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
-                            <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px 15px 0px 14px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
-
-                                <!--[if (mso)|(IE)]><td align="center" width="152" style="width: 152px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-30p4" style="max-width: 320px;min-width: 152px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <!--[if (!mso)&(!IE)]><!-->
-                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
-
-                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-
-                                                            <div style="font-size: 12px; line-height: 10%; text-align: left; word-wrap: break-word;">
-                                                                <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
-                                                                            <div dir="ltr">
-                                                                                <div dir="ltr">
-                                                                                    <div dir="ltr">
-                                                                                        <div dir="ltr">
-                                                                                            <div dir="ltr">
-                                                                                                <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div dir="ltr">
-                                                                                                                    <div dir="ltr">
-                                                                                                                        <div dir="ltr">
-                                                                                                                            <div dir="ltr">
-                                                                                                                                <div>Shipment Total:</div>
-                                                                                                                            </div>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <!--[if (!mso)&(!IE)]><!-->
-                                        </div><!--<![endif]-->
-                                    </div>
-                                </div>
-                                <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]><td align="center" width="348" style="width: 348px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-69p6" style="max-width: 320px;min-width: 348px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <!--[if (!mso)&(!IE)]><!-->
-                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
-
-                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-
-                                                            <div style="font-size: 12px; font-weight: 400; line-height: 10%; text-align: left; word-wrap: break-word;">
-                                                                <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
-                                                                            <div dir="ltr">
-                                                                                <div dir="ltr">
-                                                                                    <div dir="ltr">
-                                                                                        <div dir="ltr">
-                                                                                            <div dir="ltr">
-                                                                                                <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div dir="ltr">
-                                                                                                                    <div dir="ltr">
-                                                                                                                        <div dir="ltr">
-                                                                                                                            <div><strong>Rs.{{$order['total_amount']}}</strong></div>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <!--[if (!mso)&(!IE)]><!-->
-                                        </div><!--<![endif]-->
-                                    </div>
-                                </div>
-                                <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-
-                    <div class="u-row-container" style="padding: 0px 15px 0px 14px;background-color: #ffffff">
-                        <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
-                            <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px 15px 0px 14px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
-
-                                <!--[if (mso)|(IE)]><td align="center" width="152" style="width: 152px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-30p4" style="max-width: 320px;min-width: 152px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <!--[if (!mso)&(!IE)]><!-->
-                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
-
-                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-
-                                                            <div style="font-size: 12px; line-height: 10%; text-align: left; word-wrap: break-word;">
-                                                                <div dir="ltr">
-                                                                    <div dir="ltr" data-smartmail="gmail_signature">
-                                                                        <div dir="ltr">
-                                                                            <div dir="ltr">
-                                                                                <div dir="ltr">
-                                                                                    <div dir="ltr">
-                                                                                        <div dir="ltr">
-                                                                                            <div dir="ltr">
-                                                                                                <div dir="ltr">
-                                                                                                    <div id="m_5389458349362862931gmail-:17f">
-                                                                                                        <div id="m_5389458349362862931gmail-:17g">
-                                                                                                            <div dir="ltr">
-                                                                                                                <div dir="ltr">
-                                                                                                                    <div dir="ltr">
+                                                                                                                <div>
+                                                                                                                    <div dir="ltr" data-smartmail="gmail_signature">
                                                                                                                         <div dir="ltr">
                                                                                                                             <div dir="ltr">
                                                                                                                                 <div dir="ltr">
-                                                                                                                                    <div>Payment Pending:</div>
+                                                                                                                                    <div dir="ltr">
+                                                                                                                                        <div dir="ltr">
+                                                                                                                                            <div dir="ltr">
+                                                                                                                                                <div dir="ltr">
+                                                                                                                                                    <div>
+                                                                                                                                                        <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                                                            <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                                                                <div>Rs.1,499.00</div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
                                                                                                                                 </div>
                                                                                                                             </div>
                                                                                                                         </div>
@@ -1037,8 +661,22 @@
                                     </div>
                                 </div>
                                 <!--[if (mso)|(IE)]></td><![endif]-->
-                                <!--[if (mso)|(IE)]><td align="center" width="348" style="width: 348px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
-                                <div class="u-col u-col-69p6" style="max-width: 320px;min-width: 348px;display: table-cell;vertical-align: top;">
+                                <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="u-row-container" style="padding: 0px;background-color: #ffffff;display: none;">
+                        <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+                            <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
+                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 0px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
+
+                                <!--[if (mso)|(IE)]><td align="center" width="367" style="width: 367px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-73p4" style="max-width: 320px;min-width: 367px;display: table-cell;vertical-align: top;">
                                     <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
                                         <!--[if (!mso)&(!IE)]><!-->
                                         <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
@@ -1046,9 +684,60 @@
                                             <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                                                 <tbody>
                                                     <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px 0px;font-family:arial,helvetica,sans-serif;" align="left">
 
-                                                            <div style="font-size: 12px; font-weight: 400; line-height: 10%; text-align: left; word-wrap: break-word;">
+                                                            <div style="font-size: 12px; line-height: 10%; text-align: right; word-wrap: break-word;">
+                                                                <div dir="ltr">
+                                                                    <div>
+                                                                        <div dir="ltr" data-smartmail="gmail_signature">
+                                                                            <div dir="ltr">
+                                                                                <div dir="ltr">
+                                                                                    <div dir="ltr">
+                                                                                        <div dir="ltr">
+                                                                                            <div dir="ltr">
+                                                                                                <div dir="ltr">
+                                                                                                    <div dir="ltr">
+                                                                                                        <div>
+                                                                                                            <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                    <div>Item Name</div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                        </div><!--<![endif]-->
+                                    </div>
+                                </div>
+                                <!--[if (mso)|(IE)]></td><![endif]-->
+                                <!--[if (mso)|(IE)]><td align="center" width="133" style="width: 133px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-26p6" style="max-width: 320px;min-width: 133px;display: table-cell;vertical-align: top;">
+                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+                                        <!--[if (!mso)&(!IE)]><!-->
+                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+
+                                                            <div style="font-size: 12px; line-height: 10%; text-align: right; word-wrap: break-word;">
                                                                 <div dir="ltr">
                                                                     <div dir="ltr" data-smartmail="gmail_signature">
                                                                         <div dir="ltr">
@@ -1061,11 +750,348 @@
                                                                                                     <div id="m_5389458349362862931gmail-:17f">
                                                                                                         <div id="m_5389458349362862931gmail-:17g">
                                                                                                             <div dir="ltr">
-                                                                                                                <div dir="ltr">
+                                                                                                                <div>
+                                                                                                                    <div dir="ltr" data-smartmail="gmail_signature">
+                                                                                                                        <div dir="ltr">
+                                                                                                                            <div dir="ltr">
+                                                                                                                                <div dir="ltr">
+                                                                                                                                    <div dir="ltr">
+                                                                                                                                        <div dir="ltr">
+                                                                                                                                            <div dir="ltr">
+                                                                                                                                                <div dir="ltr">
+                                                                                                                                                    <div>
+                                                                                                                                                        <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                                                            <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                                                                <div>Rs.1,499.00</div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                        </div><!--<![endif]-->
+                                    </div>
+                                </div>
+                                <!--[if (mso)|(IE)]></td><![endif]-->
+                                <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <!-- <div class="u-row-container" style="padding: 15px 0px 0px;background-color: #ffffff"> -->
+                    <div class="u-row-container" style="padding: 0px 0px 0px;background-color: #ffffff">
+                        <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+                            <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
+                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 15px 0px 0px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
+
+                                <!--[if (mso)|(IE)]><td align="center" width="367" style="width: 367px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-73p4" style="max-width: 320px;min-width: 367px;display: table-cell;vertical-align: top;">
+                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+                                        <!--[if (!mso)&(!IE)]><!-->
+                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px 0px;font-family:arial,helvetica,sans-serif;" align="left">
+
+                                                            <div style="font-size: 12px; font-weight: 700; line-height: 10%; text-align: right; word-wrap: break-word;">
+                                                                <div dir="ltr">
+                                                                    <div>
+                                                                        <div dir="ltr" data-smartmail="gmail_signature">
+                                                                            <div dir="ltr">
+                                                                                <div dir="ltr">
+                                                                                    <div dir="ltr">
+                                                                                        <div dir="ltr">
+                                                                                            <div dir="ltr">
+                                                                                                <div dir="ltr">
+                                                                                                    <div dir="ltr">
+                                                                                                        <div>
+                                                                                                            <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                    <div>Total Amount</div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                        </div><!--<![endif]-->
+                                    </div>
+                                </div>
+                                <!--[if (mso)|(IE)]></td><![endif]-->
+                                <!--[if (mso)|(IE)]><td align="center" width="133" style="width: 133px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-26p6" style="max-width: 320px;min-width: 133px;display: table-cell;vertical-align: top;">
+                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+                                        <!--[if (!mso)&(!IE)]><!-->
+                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+
+                                                            <div style="font-size: 12px; font-weight: 700; line-height: 10%; text-align: right; word-wrap: break-word;">
+                                                                <div dir="ltr">
+                                                                    <div dir="ltr" data-smartmail="gmail_signature">
+                                                                        <div dir="ltr">
+                                                                            <div dir="ltr">
+                                                                                <div dir="ltr">
+                                                                                    <div dir="ltr">
+                                                                                        <div dir="ltr">
+                                                                                            <div dir="ltr">
+                                                                                                <div dir="ltr">
+                                                                                                    <div id="m_5389458349362862931gmail-:17f">
+                                                                                                        <div id="m_5389458349362862931gmail-:17g">
+                                                                                                            <div dir="ltr">
+                                                                                                                <div>
+                                                                                                                    <div dir="ltr" data-smartmail="gmail_signature">
+                                                                                                                        <div dir="ltr">
+                                                                                                                            <div dir="ltr">
+                                                                                                                                <div dir="ltr">
+                                                                                                                                    <div dir="ltr">
+                                                                                                                                        <div dir="ltr">
+                                                                                                                                            <div dir="ltr">
+                                                                                                                                                <div dir="ltr">
+                                                                                                                                                    <div>
+                                                                                                                                                        <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                                                            <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                                                                <div>Rs.{{$order['total_amount']}}</div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                        </div><!--<![endif]-->
+                                    </div>
+                                </div>
+                                <!--[if (mso)|(IE)]></td><![endif]-->
+                                <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="u-row-container" style="padding: 20px 0px 0px;background-color: #ffffff;display: none;">
+                        <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+                            <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
+                                <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding: 20px 0px 0px;background-color: #ffffff;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:500px;"><tr style="background-color: transparent;"><![endif]-->
+
+                                <!--[if (mso)|(IE)]><td align="center" width="367" style="width: 367px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-73p4" style="max-width: 320px;min-width: 367px;display: table-cell;vertical-align: top;">
+                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+                                        <!--[if (!mso)&(!IE)]><!-->
+                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px 0px;font-family:arial,helvetica,sans-serif;" align="left">
+
+                                                            <div style="font-size: 12px; line-height: 10%; text-align: right; word-wrap: break-word;">
+                                                                <div dir="ltr">
+                                                                    <div dir="ltr" data-smartmail="gmail_signature">
+                                                                        <div dir="ltr">
+                                                                            <div dir="ltr">
+                                                                                <div dir="ltr">
+                                                                                    <div dir="ltr">
+                                                                                        <div dir="ltr">
+                                                                                            <div dir="ltr">
+                                                                                                <div dir="ltr">
+                                                                                                    <div id="m_5389458349362862931gmail-:17f">
+                                                                                                        <div id="m_5389458349362862931gmail-:17g">
+                                                                                                            <div dir="ltr">
+                                                                                                                <div>
+                                                                                                                    <div dir="ltr" data-smartmail="gmail_signature">
+                                                                                                                        <div dir="ltr">
+                                                                                                                            <div dir="ltr">
+                                                                                                                                <div dir="ltr">
+                                                                                                                                    <div dir="ltr">
+                                                                                                                                        <div dir="ltr">
+                                                                                                                                            <div dir="ltr">
+                                                                                                                                                <div dir="ltr">
+                                                                                                                                                    <div>
+                                                                                                                                                        <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                                                            <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                                                                <div>Payment Pending:</div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                        </div><!--<![endif]-->
+                                    </div>
+                                </div>
+                                <!--[if (mso)|(IE)]></td><![endif]-->
+                                <!--[if (mso)|(IE)]><td align="center" width="133" style="width: 133px;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;" valign="top"><![endif]-->
+                                <div class="u-col u-col-26p6" style="max-width: 320px;min-width: 133px;display: table-cell;vertical-align: top;">
+                                    <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+                                        <!--[if (!mso)&(!IE)]><!-->
+                                        <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+
+                                            <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+
+                                                            <div style="font-size: 12px; line-height: 10%; text-align: right; word-wrap: break-word;">
+                                                                <div dir="ltr">
+                                                                    <div dir="ltr" data-smartmail="gmail_signature">
+                                                                        <div dir="ltr">
+                                                                            <div dir="ltr">
+                                                                                <div dir="ltr">
+                                                                                    <div dir="ltr">
+                                                                                        <div dir="ltr">
+                                                                                            <div dir="ltr">
+                                                                                                <div dir="ltr">
+                                                                                                    <div id="m_5389458349362862931gmail-:17f">
+                                                                                                        <div id="m_5389458349362862931gmail-:17g">
+                                                                                                            <div dir="ltr">
+                                                                                                                <div dir="ltr" data-smartmail="gmail_signature">
                                                                                                                     <div dir="ltr">
                                                                                                                         <div dir="ltr">
                                                                                                                             <div dir="ltr">
-                                                                                                                                <div>Rs.0.00</div>
+                                                                                                                                <div dir="ltr">
+                                                                                                                                    <div dir="ltr">
+                                                                                                                                        <div dir="ltr">
+                                                                                                                                            <div dir="ltr">
+                                                                                                                                                <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                                                    <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                                                        <div dir="ltr">
+                                                                                                                                                            <div>
+                                                                                                                                                                <div dir="ltr" data-smartmail="gmail_signature">
+                                                                                                                                                                    <div dir="ltr">
+                                                                                                                                                                        <div dir="ltr">
+                                                                                                                                                                            <div dir="ltr">
+                                                                                                                                                                                <div dir="ltr">
+                                                                                                                                                                                    <div dir="ltr">
+                                                                                                                                                                                        <div dir="ltr">
+                                                                                                                                                                                            <div dir="ltr">
+                                                                                                                                                                                                <div>
+                                                                                                                                                                                                    <div id="m_5389458349362862931gmail-:17f">
+                                                                                                                                                                                                        <div id="m_5389458349362862931gmail-:17g">
+                                                                                                                                                                                                            <div>Rs.0.00</div>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                </div>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
+                                                                                                                                                                    </div>
+                                                                                                                                                                </div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
                                                                                                                             </div>
                                                                                                                         </div>
                                                                                                                     </div>
@@ -1117,7 +1143,7 @@
                                             <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                                                 <tbody>
                                                     <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:1px 1px 25px;font-family:arial,helvetica,sans-serif;" align="left">
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:2px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div>
                                                                 <hr>
@@ -1159,7 +1185,7 @@
                                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:0px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div>
-
+                                                                <p style="font-size:12px; line-height:14px"> To ensure your safety, the Delivery Agent will drop the package at your doorstep, ring the doorbell and then move back to maintain adequate distance while waiting for you to collect your package. </p>
                                                                 <p style=" margin-top:12px; font-size:12px; line-height:14px"> We hope to see you again soon. </p>
                                                                 <div> <a href="https://hubshooting.com"> hubshooting.com </a> </div>
                                                             </div>

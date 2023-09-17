@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ShippingOrderToUser extends Mailable
+class OrderConfirmationAdmin extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -21,7 +21,6 @@ class ShippingOrderToUser extends Mailable
     public function __construct($order)
     {
         //
-        
         $this->order = $order;
     }
 
@@ -45,7 +44,7 @@ class ShippingOrderToUser extends Mailable
     public function content()
     {
         return new Content(
-            view: 'emails.shipping',
+            view: 'emails.order_confirmation_admin',
             with: ['order' => $this->order],
         );
     }
