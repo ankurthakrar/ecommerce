@@ -27,6 +27,8 @@ class Order extends Model
         'state_id',
         'pincode',
         'address_type',
+        'invoice_id',
+        'invoice_year'
     ];
 
     // APPEND

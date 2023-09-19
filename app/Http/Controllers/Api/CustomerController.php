@@ -609,6 +609,16 @@ class CustomerController extends BaseController
                         $remaining_product_stock =  $product->stock - $item['qty'];
                     };
 
+                    $cgst = null;
+                    $sgst = null;
+                    $igst = null;
+                    if($user_address->state_id == 21){
+                        $cgst = $product['tax'] / 2;
+                        $sgst = $product['tax'] / 2;
+                    }else{
+                        $igst = $product['tax'];
+                    } 
+
                     $orderItemsData[] = [
                         'user_id'               =>  $user_id,
                         'order_id'              =>  $order_data['id'],
@@ -621,6 +631,9 @@ class CustomerController extends BaseController
                         'final_price'           =>  $product['final_price'],
                         'discount'              =>  $product['discount'],
                         'tax'                   =>  $product['tax'],
+                        'cgst'                  =>  $cgst,
+                        'sgst'                  =>  $sgst,
+                        'igst'                  =>  $igst,
                         'discount_amount'       =>  $product['discount_amount'],
                         'tax_amount'            =>  $product['tax_amount'],
                         'after_discount_amount' =>  $product['after_discount_amount'],

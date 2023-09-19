@@ -334,7 +334,7 @@
                                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:2px 5px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div>
-                                                                <div style="font-size:12px;">12/09/2023</div>
+                                                                <div style="font-size:12px;">{{ date('d/m/Y') }}</div>
                                                             </div>
 
                                                         </td>
@@ -398,7 +398,7 @@
                                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:2px 5px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div>
-                                                                <div style="font-size:12px;">Uttar Pradesh (09)</div>
+                                                                <div style="font-size:12px;">{{ $order['state_name']}}</div>
                                                             </div>
 
                                                         </td>
@@ -546,11 +546,9 @@
                                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:5px 10px 0px 5px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div>
-                                                                <div style="font-weight:600;font-size:16px;">Ayisha Falaq
+                                                                <div style="font-weight:600;font-size:16px;">{{$order['full_name']}}
                                                                 </div>
-                                                                <div style="font-size:12px;line-height:14px;margin-top:2px;">M S 1/17 Atul Grove Road Connaught Place, NDMC New Delhi G.P
-                                                                    Central, Delhi Delhi 110001
-                                                                    Delhi , Delhi - 110001</div>
+                                                                <div style="font-size:12px;line-height:14px;margin-top:2px;">{{$order['address_line_1']}}{{$order['address_line_2']}},{{$order['city_name']}} , {{$order['state_name']}} - {{$order['pincode']}}</div>
                                                                 <div style="font-size:12px;line-height:14px;margin-top:10px">GSTN : URP</div>
 
                                                             </div>
@@ -577,9 +575,7 @@
                                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:8px 10px 0px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div>
-                                                                <div style="font-size:12px;line-height:14px;text-align:right;">M S 1/17 Atul Grove Road Connaught Place, NDMC New Delhi G.P
-                                                                    Central, Delhi Delhi 110001
-                                                                    Delhi , Delhi - 110001</div>
+                                                                <div style="font-size:12px;line-height:14px;margin-top:2px;">{{$order['address_line_1']}}{{$order['address_line_2']}},{{$order['city_name']}} , {{$order['state_name']}} - {{$order['pincode']}}</div>
                                                                 <div style="text-align:right;font-size:12px;line-height:14px;margin-top:5px;">GSTN : URP</div>
 
                                                             </div>
@@ -665,7 +661,7 @@
                                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                                             <div>
-                                                                <div style="text-align:center;font-weight:600;font-size:20px;">Invoice# HSEPL23-24/560</div>
+                                                                <div style="text-align:center;font-weight:600;font-size:20px;">{{$order['invoice_num']}}</div>
                                                             </div>
 
                                                         </td>
@@ -686,7 +682,7 @@
 
 
 
-
+                   @if($order->has_accessory_false)
                     <div class="u-row-container" style="padding: 0px;background-color: #ffffff">
                         <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
                             <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
@@ -714,19 +710,29 @@
                                                                             <th style="border:1px solid black; border-collapse:collapse;">Rate</th>
                                                                             <th style="border:1px solid black; border-collapse:collapse;">Amount</th>
                                                                         </tr>
-                                                                        <tr style="text-align:center;font-size:10px;border:1px solid black; border-collapse:collapse;">
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">1</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">LG400- M Monotec RE M Sr No : KBC2992 </td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">93040000 </td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">1 Nos</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">268000</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">268,000.00</td>
-                                                                        </tr>
+                                                                        <?php
+                                                                            $total_qty = 0; 
+                                                                            $total_item_price = 0.00;
+                                                                        ?>
+                                                                        @foreach($order->orderItems as $key=>$order1)
+                                                                        @if(!$order1->is_accessory)
+                                                                            <?php $total_qty = $total_qty + ($order1->qty) ?>
+                                                                            <?php $total_item_price = $total_item_price + ($order1->final_item_price) ?>
+                                                                            <tr style="text-align:center;font-size:10px;border:1px solid black; border-collapse:collapse;">
+                                                                                <td style="border:1px solid black; border-collapse:collapse;">{{$key+1}}</td>
+                                                                                <td style="border:1px solid black; border-collapse:collapse;">{{$order1->title}}</td>
+                                                                                <td style="border:1px solid black; border-collapse:collapse;">93040000 </td>
+                                                                                <td style="border:1px solid black; border-collapse:collapse;">{{$order1->qty}}</td>
+                                                                                <td style="border:1px solid black; border-collapse:collapse;">-</td>
+                                                                                <td style="border:1px solid black; border-collapse:collapse;">{{$order1->final_item_price}}</td>
+                                                                            </tr>
+                                                                        @endif
+                                                                        @endforeach
                                                                         <tr style="text-align:center;font-size:10px;border:1px solid black; border-collapse:collapse;">
                                                                             <td colspan="3" style="border:1px solid black; border-collapse:collapse;">Total</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">1 </td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$total_qty}}</td>
                                                                             <td style="border:1px solid black; border-collapse:collapse;"> </td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">268,000.00</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$total_item_price}}</td>
                                                                         </tr>
                                                                     </table>
                                                                 </div>
@@ -745,12 +751,10 @@
                                 <!--[if (mso)|(IE)]></tr></table></td></tr></table><![endif]-->
                             </div>
                         </div>
-                    </div>
+                    </div> 
+                    @endif
 
-
-
-
-
+                    @if($order->has_accessory_true)
                     <div class="u-row-container" style="padding: 0px;background-color: #ffffff">
                         <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
                             <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
@@ -783,26 +787,36 @@
 
                                                                             <th style="border:1px solid black; border-collapse:collapse;">Amount</th>
                                                                         </tr>
+                                                                        <?php
+                                                                            $total_qty = 0; 
+                                                                            $total_item_price = 0.00;
+                                                                        ?>
+                                                                        @foreach($order->orderItems as $key=>$order1)
+                                                                        @if($order1->is_accessory)
+                                                                        <?php $total_qty = $total_qty + ($order1->qty) ?>
+                                                                        <?php $total_item_price = $total_item_price + ($order1->final_item_price) ?>
                                                                         <tr style="text-align:center;font-size:10px;border:1px solid black; border-collapse:collapse;">
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">1</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">LG400- M Monotec RE M Sr No : KBC2992 </td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$key+1}}</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$order1->title}}</td>
                                                                             <td style="border:1px solid black; border-collapse:collapse;">93040000 </td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">1 Nos</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">268000</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">268000</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">9</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">9</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">268,000.00</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$order1->qty}}</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">-</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">-</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$order1->cgst}}</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$order1->sgst}}</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$order1->final_item_price}}</td> 
                                                                         </tr>
+                                                                        @endif
+                                                                        @endforeach
                                                                         <tr style="text-align:center;font-size:10px;border:1px solid black; border-collapse:collapse;">
                                                                             <td colspan="3" style="border:1px solid black; border-collapse:collapse;">Total</td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">1 </td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$total_qty}} </td>
                                                                             <td style="border:1px solid black; border-collapse:collapse;"> </td>
 
                                                                             <td style="border:1px solid black; border-collapse:collapse;"></td>
                                                                             <td style="border:1px solid black; border-collapse:collapse;"></td>
                                                                             <td style="border:1px solid black; border-collapse:collapse;"></td>
-                                                                            <td style="border:1px solid black; border-collapse:collapse;">268,000.00</td>
+                                                                            <td style="border:1px solid black; border-collapse:collapse;">{{$total_item_price}}</td>
 
 
                                                                         </tr>
@@ -824,7 +838,7 @@
                             </div>
                         </div>
                     </div>
-
+                    @endif
 
 
 
@@ -879,13 +893,13 @@
                                                             <div>
                                                                 <div>
                                                                     <div style="text-align:right;font-size:12px;">
-                                                                        <b style="margin-right:20px;">Sub Total: </b> ₹ 268,000.00
+                                                                        <b style="margin-right:20px;">Sub Total: </b> -
                                                                     </div>
                                                                     <div style="text-align:right;font-size:14px;">
-                                                                        <b style="margin-right:20px;">Total: </b> ₹ 268,000.00
+                                                                        <b style="margin-right:20px;">Total: </b> {{$order['total_amount']}}
                                                                     </div>
                                                                     <div style="font-size:12px;margin-top:5px;">
-                                                                        Total in words : <b> Two lakh sixty-eight thousand only </b>
+                                                                        Total in words : <b> {{$order['total_in_words']}} only </b>
                                                                     </div>
                                                                     <div style="text-align:right;font-size:12px;">For, Hub sports equipment pvt Ltd
                                                                     </div>

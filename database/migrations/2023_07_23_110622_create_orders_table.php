@@ -32,6 +32,8 @@ return new class extends Migration
             $table->bigInteger('state_id')->nullable();
             $table->bigInteger('pincode')->nullable();
             $table->string('address_type')->nullable();
+            $table->string('invoice_id')->nullable();
+            $table->string('invoice_year')->nullable();
             $table->timestamps();
         });
     }

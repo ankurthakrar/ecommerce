@@ -17,7 +17,7 @@ use App\Models\User;
 use App\Models\UserDocument;
 use App\Helpers\Helper;
 use App\Models\City;
-use App\Models\State;
+use App\Models\State; 
 use Validator;
 
 class AdminController extends BaseController
@@ -832,6 +832,41 @@ class AdminController extends BaseController
                 }
 
                 if(isset($input['order_status']) &&  $input['order_status'] == 'delivered'){
+                    $accessories_children = Categories::where('parent_id',3)->pluck('id')->toArray();
+                    $accessories_children[] = 3;
+
+                    $hasAccessoryTrue = $order_details->orderItems->some(function ($item) use ($accessories_children) {
+                        $categoryIds = explode(',', $item->category_id);
+                        $item->is_accessory = !empty(array_intersect($categoryIds, $accessories_children));
+                        return $item->is_accessory; // Check if at least one item has is_accessory set to true
+                    });
+                    
+                    $hasAccessoryFalse = $order_details->orderItems->some(function ($item) use ($accessories_children) {
+                        $categoryIds = explode(',', $item->category_id);
+                        $item->is_accessory = !empty(array_intersect($categoryIds, $accessories_children));
+                        return !$item->is_accessory; // Check if at least one item has is_accessory set to false
+                    });
+                    
+                    $order_details->has_accessory_true = $hasAccessoryTrue;
+                    $order_details->has_accessory_false = $hasAccessoryFalse;
+                    
+                      
+                    if (date('n') < 4) {
+                        $year = date('y', strtotime('-1 year'));
+                    } else {
+                        $year = date('y');
+                    }
+                    $maxInvoiceId = \DB::table('orders')->where('invoice_year',$year)->max('invoice_id');
+                    $invoiceId = ($maxInvoiceId < 1) ? 1 : ($maxInvoiceId + 1); 
+                    $order_details['invoice_num'] = "Invoice #HSEPL".$year."-".($year+1)."/".$invoiceId;
+ 
+
+                    $f = new \NumberFormatter( locale_get_default(), \NumberFormatter::SPELLOUT );
+                    $total_in_words = $f->format(floatval($order_details['total_amount']));
+                    
+                    $order_details['total_in_words'] = preg_replace('/ point .*/', '', $total_in_words);
+ 
+                    Order::where('id',$request->order_id)->update(['invoice_id' => $invoiceId,'invoice_year' => $year]);
                     $email_data   = [
                         'email'                  => $user_data->email,
                         'order_invoice'          => 'order_invoice',

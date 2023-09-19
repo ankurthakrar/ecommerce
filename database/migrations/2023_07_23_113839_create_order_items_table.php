@@ -26,6 +26,9 @@ return new class extends Migration
             $table->string('final_price')->nullable();
             $table->string('discount')->nullable();
             $table->string('tax')->nullable();
+            $table->string('cgst')->nullable();
+            $table->string('sgst')->nullable();
+            $table->string('igst')->nullable();
             $table->string('discount_amount')->nullable();
             $table->string('tax_amount')->nullable();
             $table->string('after_discount_amount')->nullable();
