@@ -117,6 +117,7 @@ Route::middleware('auth:api')->group(function () {
     // Order
     
     Route::post('place-order', [CustomerController::class, 'placeOrder'])->name('place-order');
+    Route::post('payment-status-change', [CustomerController::class, 'paymentStatusChange'])->name('payment-status-change');
     Route::post('order-mail-sms', [CustomerController::class, 'orderMailSMS'])->name('order-mail-sms');
     Route::get('get-order-list', [CustomerController::class, 'getOrderList'])->name('get-order-list');
     Route::get('get-order-details/{id}', [CustomerController::class, 'getOrderDetails'])->name('get-order-details');

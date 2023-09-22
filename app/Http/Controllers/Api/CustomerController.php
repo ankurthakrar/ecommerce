@@ -670,14 +670,37 @@ class CustomerController extends BaseController
                 $cartItem         = Cart::where('user_id', $user_id)->delete();
 
                 $data['order_id']  =  $order_data['id'];
-                $data['is_send_mail']  = 0;
-
-                if(($input['payment_method'] == 'online' && $input['payment_status'] == 'approved') || ($input['payment_method'] == 'cod' && $input['payment_status'] == 'pending')){
-                    $data['is_send_mail']  = 1;
-                }
                 return $this->success($data,'Order successfully');
             }
             return $this->error('Something went wrong','Something went wrong');
+        }catch(Exception $e){
+            return $this->error($e->getMessage(),'Exception occur');
+        }
+        return $this->error('Something went wrong','Something went wrong');
+    }
+
+    // PAYMENT STATUS CHANGE
+
+    public function paymentStatusChange(Request $request){
+        try{
+            $input                = $request->all();
+            $validateData = Validator::make($input, [ 
+                'payment_status' => 'required',
+                'order_id'       => 'required',
+            ]);
+
+            if ($validateData->fails()) {
+                return $this->error($validateData->errors(),'Validation error',422);
+            }
+
+            Order::where('id',$input['order_id'])->update(['payment_status' => $input['payment_status']]);
+            $data['is_send_mail']  = 0;
+
+            if($input['payment_status'] == 'success'){
+                $data['is_send_mail']  = 1;
+            }
+
+            return $this->success($data,'Payment status change successfully');  
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }
