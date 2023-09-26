@@ -666,8 +666,7 @@ class CustomerController extends BaseController
                         ProductVariant::where('id', $productVariantId)->update(['stock'=>$remaining_variant_stock]);
                     }
                 }
-                OrderItem::insert($orderItemsData);
-                $cartItem         = Cart::where('user_id', $user_id)->delete();
+                OrderItem::insert($orderItemsData); 
 
                 $data['order_id']  =  $order_data['id'];
                 return $this->success($data,'Order successfully');
@@ -693,11 +692,12 @@ class CustomerController extends BaseController
                 return $this->error($validateData->errors(),'Validation error',422);
             }
 
-            Order::where('id',$input['order_id'])->update(['payment_status' => $input['payment_status']]);
+            Order::where('id',$input['order_id'])->update(['payment_status' => $input['payment_status'],'payment_id' => $input['payment_id']]);
             $data['is_send_mail']  = 0;
-
+            $user_id              = Auth::id();
             if($input['payment_status'] == 'success'){
                 $data['is_send_mail']  = 1;
+                $cartItem   = Cart::where('user_id', $user_id)->delete();
             }
 
             return $this->success($data,'Payment status change successfully');  
@@ -737,7 +737,8 @@ class CustomerController extends BaseController
                 'email'                 => Auth::user()->email,
                 'order_confirmation'    => 'order_confirmation',
                 'order'                 => $order_data,
-            ]; 
+            ];  
+            
             Helper::sendMail('emails.order_confirmation', $email_data, Auth::user()->email, '');
 
             return $this->success([],'Sent successfully');
@@ -753,7 +754,7 @@ class CustomerController extends BaseController
     {
         try{
             $user_id               = Auth::id();
-            $order_list            = Order::with('orderItems')->where('user_id',$user_id)->latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
+            $order_list            = Order::with('orderItems')->where('user_id',$user_id)->where('payment_status','success')->latest()->paginate($request->input('perPage'), ['*'], 'page', $request->input('page'));
 
             $data['order_list']    =  $order_list->values();
             $data['current_page']  =  $order_list->currentPage();
