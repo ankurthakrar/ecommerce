@@ -40,7 +40,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <p style="padding: 40px 20px 0px;color: #5B5B5B;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:16px;margin-bottom:5px;">Order Number: <span style="color: #929292;font-weight: 500;">{{$order['order_id']}}</span></p>
+                            <p style="padding: 40px 20px 0px;color: #5B5B5B;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:16px;margin-bottom:5px;">Order Number: <span style="color: #929292;font-weight: 500;">#O-{{$order['id']}}</span></p>
                         </td>
                     </tr>
                     <tr>

@@ -186,7 +186,7 @@
                                                                 <div style="text-align:right; font-size:12px; "> Your Orders | Your Account | <a href="https://hubshooting.com"> hubshooting.com </a> </div>
                                                                 <div style="color:black; padding-top:3px; font-size:18px; border-top:1px solid grey; margin-top:3px; text-align:right;"> Shipping Confirmation
                                                                 </div>
-                                                                <div style="text-align:right; font-size:12px; "> Order #{{$order['order_id']}}</div>
+                                                                <div style="text-align:right; font-size:12px; "> Order #O-{{$order['id']}}</div>
                                                             </div>
 
                                                         </td>

@@ -210,7 +210,7 @@
                                 <div
                                   style="color:black; padding-top:3px; font-size:18px; border-top:0px solid grey; margin-top:15px; text-align:right;">
                                   Order Confirmation </div>
-                                <div style="text-align:right; font-size:12px; "> Order #{{$order['order_id']}} </div>
+                                <div style="text-align:right; font-size:12px; "> Order #O-{{$order['id']}} </div>
                               </div>
 
                             </td>
@@ -432,7 +432,7 @@
                                   style="color:#000000;padding-top:6px; border-top:1px solid rgb(0, 0, 0); font-size:18px; line-height:22px; text-align:center; ">
                                   Order summary
                                 </div>
-                                <div style="font-size:12px; line-height:11px; margin-top:5px;padding-left: 10px;color: rgb(0, 0, 0); "> Order Id #{{$order['order_id']}}
+                                <div style="font-size:12px; line-height:11px; margin-top:5px;padding-left: 10px;color: rgb(0, 0, 0); "> Order Id #O-{{$order['id']}}
                                 </div>
                                 <div style="font-size:12px; line-height:11px; margin-top:5px;padding-left: 10px;color: rgb(0, 0, 0); ">Total Items: {{count($order->orderItems)}}
                                 </div>

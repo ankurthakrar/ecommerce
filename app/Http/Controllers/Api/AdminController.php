@@ -814,15 +814,15 @@ class AdminController extends BaseController
 
                 if(isset($input['order_status']) &&  $input['order_status'] == 'shipped'){
                     $messageTemplate = "Dear Customer, Your order # {{orderNumber}} has been shipped and is on its way. - Hub Sports Equipment Pvt. Ltd.";
-                    $orderNumber  = $order_details['order_id']; 
+                    $orderNumber  = "O-".$request->order_id; 
                     $message      = str_replace('{{orderNumber}}', $orderNumber, $messageTemplate);
 
                     if(isset($user_data->phone_no)){
-                        // $responseData = Helper::sendOTP($message,$user_data->phone_no);
+                        $responseData = Helper::sendOTP($message,$user_data->phone_no);
                     }
 
-                    $order_details['original_full_name'] = $user_data->first_name.' '.$user_data->last_name;
-
+                    $order_details['original_full_name'] = $user_data->first_name.' '.$user_data->last_name; 
+ 
                     $email_data   = [
                         'email'                  => $user_data->email,
                         'shipping_order_to_user' => 'shipping_order_to_user',

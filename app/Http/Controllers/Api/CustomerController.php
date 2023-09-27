@@ -729,7 +729,7 @@ class CustomerController extends BaseController
             $order_data['state'] = $state_name->name;
 
             $messageTemplate = "Dear Customer, thank you for shopping with Hub Sports! Your order # {{orderNumber}} has been received. We'll notify you once it ships.";
-            $orderNumber  = $order_data['order_id']; 
+            $orderNumber  = "O-".$request->order_id; 
             $message      = str_replace('{{orderNumber}}', $orderNumber, $messageTemplate);
             $responseData = Helper::sendOTP($message,Auth::user()->phone_no);
  
