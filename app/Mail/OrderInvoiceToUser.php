@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Attachment;
 
 class OrderInvoiceToUser extends Mailable
 {
@@ -56,6 +57,10 @@ class OrderInvoiceToUser extends Mailable
      */
     public function attachments()
     {
-        return [];
+        return [
+            Attachment::fromPath($this->order['attachment'])
+            ->as($this->order['pdf_name'])
+            ->withMime('application/pdf')
+        ];
     }
 }

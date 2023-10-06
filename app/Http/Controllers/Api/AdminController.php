@@ -867,6 +867,16 @@ class AdminController extends BaseController
                     $order_details['total_in_words'] = preg_replace('/ point .*/', '', $total_in_words);
  
                     Order::where('id',$request->order_id)->update(['invoice_id' => $invoiceId,'invoice_year' => $year]);
+
+                    $folderPath = public_path().'/invoice';
+                    if (!is_dir($folderPath)) {
+                        mkdir($folderPath, 0777, true);
+                    }
+                    $pdf = \PDF::loadView('emails.order_invoice_to_user_pdf', ['order' => $order_details]);
+                    $order_details['pdf_name'] = 'invoice_'.$order_details->id.'.pdf';
+                    $pdf->save(public_path('invoice/'.$order_details['pdf_name']));   
+                    $order_details['attachment'] = public_path('invoice/'.$order_details['pdf_name']);
+                     
                     $email_data   = [
                         'email'                  => $user_data->email,
                         'order_invoice'          => 'order_invoice',

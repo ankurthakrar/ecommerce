@@ -172,7 +172,7 @@
                     <tbody style="padding-top: 50px;">
                         <tr>
                             <td style="padding: 22px;">
-                                <h1 style="color: #5B5B5B;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:16px;font-weight:300;line-height:19px;margin:0;">Thank you, <br> <span style="padding-top: 6px;display: block;">Team Ecommerce</span></h1>
+                                <h1 style="color: #5B5B5B;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:16px;font-weight:300;line-height:19px;margin:0;">Thank you, <br> <span style="padding-top: 6px;display: block;">Team hub shooting</span></h1>
                             </td>
                         </tr>
                         <tr>
@@ -187,7 +187,7 @@
                         </tr>
                         <tr>
                             <td style="padding: 22px;">
-                                <p style='padding-top: 50px;color:#69616A;display:block;font-family:"Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;font-size:15px;font-weight:500;line-height:130%;margin: 0 0 8px;text-align: center;'>Ecommerce</p>
+                                <p style='padding-top: 50px;color:#69616A;display:block;font-family:"Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;font-size:15px;font-weight:500;line-height:130%;margin: 0 0 8px;text-align: center;'>Hub shooting</p>
                                 <p style="border-top: 1px solid #D1D1D1;margin-bottom: 14px;"></p>
                             </td>
                         </tr>

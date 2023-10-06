@@ -176,6 +176,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -192,10 +193,12 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // ...
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+
     ])->toArray(),
 
     'admin_mail' => env('ADMIN_EMAIL','admin@gmail.com'),
-    'app_name'  => env('APP_NAME','ecommerce'),
+    'app_name'  => env('APP_NAME','hub-shooting'),
     'txt_lcl_api' => env('TEXT_LOCAL_API','NDE2NDYzNDM3YTc1NTY3MTU1NjU3NDY5MzAzMDczMzI='),
     'txt_lcl_sender' => env('TEXT_LOCAL_SENDER_ID','HBSEPL'),
     'admin_order_url'  => env('ADMIN_ORDER_URL','https://hub.asesadigital.com/admin-order/'),
