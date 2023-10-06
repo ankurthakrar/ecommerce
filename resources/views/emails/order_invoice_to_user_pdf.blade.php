@@ -177,7 +177,7 @@
                         <tr>
                             <td> <div class="leftHead">
                                 <div class="imgBox">
-                                    <!-- <img src="{{url('')}}/public/images/hub-image.png" class="headImg" alt="logo"> -->
+                                    <img src="{{url('')}}/public/images/hub-image-invoice.jpg" class="headImg" alt="logo">
                                 </div>
                                 <div class="headText">
                                     <div class="headingg">
