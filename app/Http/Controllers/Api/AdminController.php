@@ -1097,6 +1097,6 @@ class AdminController extends BaseController
         }catch(Exception $e){
             return $this->error($e->getMessage(),'Exception occur');
         }
-        return $this->error('Something went wrong','Something went wrong');
+        return $this->error('Something went wrong','Something went wrong'); 
     }
 }
