@@ -19,12 +19,12 @@ class AdminSeeder extends Seeder
         $admin = User::create([
             'first_name' => 'Admin',
             'last_name' => 'data',
-            'email' => 'admin@gmail.com',
+            'email' => 'Admin@hubshooting.com',
             'phone_no' => '+911234567890',
             'email_verified'=> 1,
             'phone_verified'=> 1,
             'otp_verified'=> 1,
-            'password' => bcrypt('Admin@123'),
+            'password' => bcrypt('Hub@0620'),
             'user_type' =>'admin',
         ]);
     }

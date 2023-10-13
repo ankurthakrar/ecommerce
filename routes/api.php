@@ -30,64 +30,66 @@ Route::post('social-auth', [AuthController::class, 'socialAuth'])->name('social-
 Route::middleware('auth:api')->group(function () {
 
     // Admin ROUTE
+    Route::middleware(['auth:api', 'admin'])->group(function () {
 
-    // Category 
+        // Category 
 
-    Route::get('category-list', [AdminController::class, 'categoryList'])->name('category-list');
-    Route::post('category-store', [AdminController::class,'categoryStore'])->name('category-store');
-    Route::get('category-detail/{id}', [AdminController::class, 'categoryDetail'])->name('category-detail');
-    Route::post('category-update', [AdminController::class,'categoryUpdate'])->name('category-update');
+        Route::get('category-list', [AdminController::class, 'categoryList'])->name('category-list');
+        Route::post('category-store', [AdminController::class,'categoryStore'])->name('category-store');
+        Route::get('category-detail/{id}', [AdminController::class, 'categoryDetail'])->name('category-detail');
+        Route::post('category-update', [AdminController::class,'categoryUpdate'])->name('category-update');
 
-    // Tags 
+        // Tags 
 
-    Route::get('tag-list', [AdminController::class, 'tagList'])->name('tag-list');
-    Route::post('tag-store', [AdminController::class,'tagStore'])->name('tag-store');
-    Route::get('tag-detail/{id}', [AdminController::class, 'tagDetail'])->name('tag-detail');
-    Route::post('tag-update', [AdminController::class,'tagUpdate'])->name('tag-update');
+        Route::get('tag-list', [AdminController::class, 'tagList'])->name('tag-list');
+        Route::post('tag-store', [AdminController::class,'tagStore'])->name('tag-store');
+        Route::get('tag-detail/{id}', [AdminController::class, 'tagDetail'])->name('tag-detail');
+        Route::post('tag-update', [AdminController::class,'tagUpdate'])->name('tag-update');
 
-    // Brand 
+        // Brand 
 
-    Route::get('brand-list', [AdminController::class, 'brandList'])->name('brand-list');
-    Route::post('brand-store', [AdminController::class,'brandStore'])->name('brand-store');
-    Route::get('brand-detail/{id}', [AdminController::class, 'brandDetail'])->name('brand-detail');
-    Route::post('brand-update', [AdminController::class,'brandUpdate'])->name('brand-update');
+        Route::get('brand-list', [AdminController::class, 'brandList'])->name('brand-list');
+        Route::post('brand-store', [AdminController::class,'brandStore'])->name('brand-store');
+        Route::get('brand-detail/{id}', [AdminController::class, 'brandDetail'])->name('brand-detail');
+        Route::post('brand-update', [AdminController::class,'brandUpdate'])->name('brand-update');
+        
+        // Product
+
+        Route::get('product-list', [AdminController::class, 'productList'])->name('product-list');
+        Route::post('product-store', [AdminController::class,'productStore'])->name('product-store');
+        Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');
+        Route::post('product-update', [AdminController::class,'productUpdate'])->name('product-update');
+        Route::post('variant-update', [AdminController::class,'variantUpdate'])->name('variant-update');
+        Route::post('product-image-update', [AdminController::class,'productImageUpdate'])->name('product-image-update');
+        Route::post('variant-delete', [AdminController::class,'variantDelete'])->name('variant-delete');
+        Route::post('product-image-delete', [AdminController::class,'productImageDelete'])->name('product-image-delete');
+        Route::post('variant-add', [AdminController::class,'variantAdd'])->name('variant-add');
+        Route::post('image-list', [AdminController::class, 'imageList'])->name('image-list');
+        
+        // Order
+        
+        Route::get('order-list', [AdminController::class, 'orderList'])->name('order-list');
+        Route::get('order-details/{id}', [AdminController::class, 'orderDetails'])->name('order-details');
+        Route::post('order-update', [AdminController::class,'orderUpdate'])->name('order-update');
+
+        // Slider
+
+        Route::get('slider-image-list', [AdminController::class, 'sliderImageList'])->name('slider-image-list');
+        Route::post('slider-image-store', [AdminController::class,'sliderImageStore'])->name('slider-image-store');
+        Route::get('slider-image-detail/{id}', [AdminController::class, 'sliderImageDetail'])->name('slider-image-detail');
+        Route::post('slider-image-update', [AdminController::class,'sliderImageUpdate'])->name('slider-image-update');
+        Route::get('slider-image-delete/{id}', [AdminController::class, 'sliderImageDelete'])->name('slider-image-delete');
+
+        // DOCUMENT LIST
+
+        Route::get('get-document-list/{id}', [AdminController::class, 'getDocumentList'])->name('get-document-list');
+        Route::get('get-document-detail/{id}', [AdminController::class, 'getDocmentDetails'])->name('get-order-details');
+
+        // USER LIST
+
+        Route::get('get-user-list', [AdminController::class, 'getUserList'])->name('get-user-list');
+    });
     
-    // Product
-
-    Route::get('product-list', [AdminController::class, 'productList'])->name('product-list');
-    Route::post('product-store', [AdminController::class,'productStore'])->name('product-store');
-    Route::get('product-detail/{id}', [AdminController::class, 'productDetail'])->name('product-detail');
-    Route::post('product-update', [AdminController::class,'productUpdate'])->name('product-update');
-    Route::post('variant-update', [AdminController::class,'variantUpdate'])->name('variant-update');
-    Route::post('product-image-update', [AdminController::class,'productImageUpdate'])->name('product-image-update');
-    Route::post('variant-delete', [AdminController::class,'variantDelete'])->name('variant-delete');
-    Route::post('product-image-delete', [AdminController::class,'productImageDelete'])->name('product-image-delete');
-    Route::post('variant-add', [AdminController::class,'variantAdd'])->name('variant-add');
-    Route::post('image-list', [AdminController::class, 'imageList'])->name('image-list');
-    
-    // Order
-    
-    Route::get('order-list', [AdminController::class, 'orderList'])->name('order-list');
-    Route::get('order-details/{id}', [AdminController::class, 'orderDetails'])->name('order-details');
-    Route::post('order-update', [AdminController::class,'orderUpdate'])->name('order-update');
-
-    // Slider
-
-    Route::get('slider-image-list', [AdminController::class, 'sliderImageList'])->name('slider-image-list');
-    Route::post('slider-image-store', [AdminController::class,'sliderImageStore'])->name('slider-image-store');
-    Route::get('slider-image-detail/{id}', [AdminController::class, 'sliderImageDetail'])->name('slider-image-detail');
-    Route::post('slider-image-update', [AdminController::class,'sliderImageUpdate'])->name('slider-image-update');
-    Route::get('slider-image-delete/{id}', [AdminController::class, 'sliderImageDelete'])->name('slider-image-delete');
-
-    // DOCUMENT LIST
-
-    Route::get('get-document-list/{id}', [AdminController::class, 'getDocumentList'])->name('get-document-list');
-    Route::get('get-document-detail/{id}', [AdminController::class, 'getDocmentDetails'])->name('get-order-details');
-
-    // USER LIST
-
-    Route::get('get-user-list', [AdminController::class, 'getUserList'])->name('get-user-list');
-
     // USER ROUTE
     
     // Cart
